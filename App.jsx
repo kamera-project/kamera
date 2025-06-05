@@ -1,23 +1,20 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
-// import samplePreview from './src/assets/images/sample_preview.png';
-// import Footer from './src/components/footer/Footer';
+import { View, Text, StyleSheet, Image, SafeAreaView } from 'react-native';
+import CameraHeader from './src/components/header/Header';
+import samplePreview from './src/assets/images/sample_preview.png';
+import Footer from './src/components/footer/Footer';
+import CameraScreen from './src/screens/CameraScreen';
 
 export default function App() {
   return (
     <View style={styles.screen}>
-      {/* header 컴포넌트 */}
-      <View style={styles.header}>
-        <Text style={styles.title}>상단</Text>
-      </View>
+      <SafeAreaView style={styles.header}>
+        <CameraHeader />
+      </SafeAreaView>
 
       <View style={styles.main}>
         {/* View style main 영역 */}
-        {/* <Image
-          source={samplePreview}
-          style={styles.preview}
-        /> */}
-        {/* <Preview /> */}
+        <CameraScreen />
         {/* <Guide /> */}
         {/* <Sticker /> */}
       </View>
