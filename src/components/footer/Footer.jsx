@@ -1,45 +1,87 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
-// import HomeBtn from '../../assets/svg/HomeButton.png';
-import HomeBtn from '../../assets/svg/HomeBtn.svg';
-import Smile from '../../assets/svg/smile.svg';
+import {
+  SafeAreaView,
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Alert,
+} from 'react-native';
+import HomeBtn from './HomeButton';
+import Sticker from './Sticker';
 import Goback from '../../assets/svg/goback.svg';
-import Gallery from '../../assets/svg/gallery.svg';
+import Gallery from './Gallery';
 
 export default function Footer() {
+  function openGallery() {
+    alert('gallery clicked!!');
+  }
+  function takePhoto() {
+    alert('shot button clicked!!');
+  }
+  function openStickerBook() {
+    alert('sticker book clicked!!');
+  }
+
   return (
-    <View style={styles.container}>
-      {/* <Image
-        style={{ height: 90, width: 90 }}
-        source={HomeBtn}
-      /> */}
-      <Goback
-        width={90}
-        height={90}
-      />
-      <Gallery
-        width={90}
-        height={90}
-      />
-      <HomeBtn
-        width={90}
-        height={90}
-      />
-      <Smile
-        width={90}
-        height={90}
-      />
-      {/* <Text>home</Text> */}
-    </View>
+    <SafeAreaView
+      style={{ width: '100%', height: '20%', justifyContent: 'center' }}
+    >
+      <View style={styles.container}>
+        <View style={styles.firstSpace} />
+        {/* <View style={styles.grid}><Goback /></View> */}
+        <View>
+          <Gallery
+            galleryClick={openGallery}
+            style={styles.icons}
+          />
+        </View>
+        <View style={styles.secondSpace} />
+        <View style={styles.iconsHome}>
+          <HomeBtn
+            homeBtnClick={takePhoto}
+            style={styles.icons}
+          />
+        </View>
+        <View style={styles.ThridSpace} />
+        <View>
+          <Sticker
+            stickerClick={openStickerBook}
+            style={styles.icons}
+          />
+        </View>
+        <View style={styles.fourthSpace} />
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row', // ← 가로 배치
-    justifyContent: 'space-around', // ← 아이콘 간 간격을 균등하게
+    flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 16,
+    backgroundColor: '#fff',
+  },
+  firstSpace: {
+    width: '10%',
+  },
+  secondSpace: {
+    width: '10%',
+  },
+  ThridSpace: {
+    width: '10%',
+  },
+  fourthSpace: {
+    width: '10%',
+  },
+  fifthSpace: {
+    width: '10%',
+  },
+  iconsHome: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
     backgroundColor: '#fff',
   },
 });
