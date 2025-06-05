@@ -19,12 +19,9 @@ export default function App() {
         {/* <Sticker /> */}
       </View>
 
-      <View style={styles.footer}>
-        {/* footer 컴포넌트 */}
-        {/* <Footer /> */}
-
-        {/* <Text style={styles.title}>하단1</Text> */}
-      </View>
+      {/* <View style={styles.footer}> */}
+      <Footer style={styles.footer} />
+      {/* </View> */}
     </View>
   );
 }
