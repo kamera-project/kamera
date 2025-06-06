@@ -12,7 +12,7 @@ import Sticker from './Sticker';
 import Goback from '../../assets/svg/goback.svg';
 import Gallery from './Gallery';
 
-export default function Footer() {
+export default function Footer({ onTakePhoto }) {
   function openGallery() {
     alert('gallery clicked!!');
   }
@@ -39,7 +39,7 @@ export default function Footer() {
         <View style={styles.secondSpace} />
         <View style={styles.iconsHome}>
           <HomeBtn
-            homeBtnClick={takePhoto}
+            homeBtnClick={onTakePhoto}
             style={styles.icons}
           />
         </View>

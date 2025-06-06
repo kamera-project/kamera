@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -9,11 +9,14 @@ import {
   Dimensions,
 } from 'react-native';
 import { Camera, useCameraDevice } from 'react-native-vision-camera';
+import Footer from '../components/footer/Footer';
+import { CameraRoll } from '@react-native-camera-roll/camera-roll';
 
 export default function CameraScreen() {
   const [cameraPermission, setCameraPermission] = useState(null);
   const [microphonePermission, setMicrophonePermission] = useState(null);
   const [isRequesting, setIsRequesting] = useState(false);
+  const cameraRef = useRef(null);
 
   const backCamera = useCameraDevice('back');
   const frontCamera = useCameraDevice('front');
@@ -77,9 +80,17 @@ export default function CameraScreen() {
 
   const chosenDevice = backCamera || frontCamera;
 
+  const handleTakePhoto = async () => {
+    const photo = await cameraRef.current.takePhoto();
+    await CameraRoll.saveAsset(`file://${photo.path}`, {
+      type: 'photo',
+    });
+  }
+
   return (
     <View style={styles.overallBackground}>
       <Camera
+        ref={cameraRef}
         device={chosenDevice}
         isActive={true}
         style={styles.cameraPosition}
@@ -87,6 +98,7 @@ export default function CameraScreen() {
         video={false}
         audio={false}
       />
+      <Footer onTakePhoto={handleTakePhoto} />
     </View>
   );
 }
