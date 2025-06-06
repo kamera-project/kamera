@@ -16,11 +16,10 @@ export default function CameraScreen() {
   const [cameraPermission, setCameraPermission] = useState(null);
   const [microphonePermission, setMicrophonePermission] = useState(null);
   const [isRequesting, setIsRequesting] = useState(false);
+  const cameraRef = useRef(null);
 
   const backCamera = useCameraDevice('back');
   const frontCamera = useCameraDevice('front');
-
-  const cameraRef = useRef(null);
 
   useEffect(() => {
     (async () => {
@@ -99,7 +98,7 @@ export default function CameraScreen() {
         video={false}
         audio={false}
       />
-      <Footer onTakePhoto={handleTakePhoto} style={styles.footer} />
+      <Footer onTakePhoto={handleTakePhoto} />
     </View>
   );
 }
@@ -127,12 +126,5 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     textAlign: 'center',
     color: 'black',
-  },
-  footer: {
-    flex: 2,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    backgroundColor: 'white',
   },
 });
