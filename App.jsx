@@ -1,8 +1,6 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, Image, SafeAreaView } from 'react-native';
+import React from 'react';
+import { View, StyleSheet, SafeAreaView } from 'react-native';
 import CameraHeader from './src/components/header/Header';
-import samplePreview from './src/assets/images/sample_preview.png';
-import Footer from './src/components/footer/Footer';
 import CameraScreen from './src/screens/CameraScreen';
 
 export default function App() {

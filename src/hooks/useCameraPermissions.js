@@ -1,6 +1,5 @@
 import { Camera, useCameraDevice } from 'react-native-vision-camera';
 import { useEffect, useRef, useState } from 'react';
-import { CameraRoll } from '@react-native-camera-roll/camera-roll';
 
 export function userCameraPermissions() {
   const cameraRef = useRef(null);
