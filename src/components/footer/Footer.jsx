@@ -11,6 +11,7 @@ import HomeBtn from './HomeButton';
 import Sticker from './Sticker';
 import Goback from '../../assets/svg/goback.svg';
 import Gallery from './Gallery';
+import { handleTakePhoto } from '../hooks/useCameraPermissions';
 
 export default function Footer({ onTakePhoto }) {
   function openGallery() {
