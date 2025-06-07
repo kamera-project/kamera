@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Image, SafeAreaView } from 'react-native';
 import CameraHeader from './src/components/header/Header';
 import samplePreview from './src/assets/images/sample_preview.png';
@@ -13,15 +13,8 @@ export default function App() {
       </SafeAreaView>
 
       <View style={styles.main}>
-        {/* View style main 영역 */}
         <CameraScreen />
-        {/* <Guide /> */}
-        {/* <Sticker /> */}
       </View>
-
-      {/* <View style={styles.footer}> */}
-      {/* <Footer style={styles.footer} /> */}
-      {/* </View> */}
     </View>
   );
 }

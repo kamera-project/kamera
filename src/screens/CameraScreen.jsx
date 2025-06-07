@@ -1,68 +1,55 @@
-import React, { useEffect, useRef, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  PermissionsAndroid,
-  Platform,
-  Button,
-  Dimensions,
-} from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Button, Dimensions } from 'react-native';
 import { Camera, useCameraDevice } from 'react-native-vision-camera';
 import Footer from '../components/footer/Footer';
-import { CameraRoll } from '@react-native-camera-roll/camera-roll';
+import { useCameraStore } from '../store/useCameraStore';
+import { handleTakePhoto } from '../utils/camera/takePhoto';
 
 export default function CameraScreen() {
-  const [cameraPermission, setCameraPermission] = useState(null);
-  const [microphonePermission, setMicrophonePermission] = useState(null);
-  const [isRequesting, setIsRequesting] = useState(false);
   const cameraRef = useRef(null);
+  const cameraPermission = useCameraStore((state) => state.cameraPermission);
+  const setCameraPermission = useCameraStore(
+    (state) => state.setCameraPermission,
+  );
+
+  const chosenDevice = useCameraStore((state) => state.chosenDevice);
+  const setChosenDevice = useCameraStore((state) => state.setChosenDevice);
+
+  const isRequesting = useCameraStore((state) => state.isRequesting);
+  const setIsRequesting = useCameraStore((state) => state.setIsRequesting);
 
   const backCamera = useCameraDevice('back');
   const frontCamera = useCameraDevice('front');
+  const initialCameraMode = backCamera || frontCamera;
+
+  useEffect(() => {
+    if (initialCameraMode) {
+      setChosenDevice(initialCameraMode);
+    }
+  }, [initialCameraMode, setChosenDevice]);
 
   useEffect(() => {
     (async () => {
       let camStatus = await Camera.getCameraPermissionStatus();
-      let micStatus = await Camera.getMicrophonePermissionStatus();
 
-      if (
-        typeof camStatus === 'undefined' &&
-        typeof micStatus === 'undefined'
-      ) {
+      if (typeof camStatus === 'undefined') {
         camStatus = 'not-determined';
-        micStatus = 'not-determined';
       }
-
       setCameraPermission(camStatus);
-      setMicrophonePermission(micStatus);
     })();
   }, []);
 
   async function requestPermissions() {
     setIsRequesting(true);
-
     const newCamStatus = await Camera.requestCameraPermission();
     setCameraPermission(newCamStatus);
-
-    if (Platform.OS === 'android') {
-      await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO
-      );
-    }
-
-    const newMicStatus = await Camera.requestMicrophonePermission();
-    setMicrophonePermission(newMicStatus);
     setIsRequesting(false);
   }
 
   if (
     cameraPermission === null ||
-    microphonePermission === null ||
     cameraPermission === 'denied' ||
-    microphonePermission === 'denied' ||
-    cameraPermission === 'not-determined' ||
-    microphonePermission === 'not-determined'
+    cameraPermission === 'not-determined'
   ) {
     return (
       <View style={styles.centerPosition}>
@@ -78,14 +65,9 @@ export default function CameraScreen() {
     );
   }
 
-  const chosenDevice = backCamera || frontCamera;
-
-  const handleTakePhoto = async () => {
-    const photo = await cameraRef.current.takePhoto();
-    await CameraRoll.saveAsset(`file://${photo.path}`, {
-      type: 'photo',
-    });
-  }
+  const onTakePhoto = () => {
+    handleTakePhoto(cameraRef);
+  };
 
   return (
     <View style={styles.overallBackground}>
@@ -98,7 +80,7 @@ export default function CameraScreen() {
         video={false}
         audio={false}
       />
-      <Footer onTakePhoto={handleTakePhoto} />
+      <Footer onTakePhoto={onTakePhoto} />
     </View>
   );
 }
