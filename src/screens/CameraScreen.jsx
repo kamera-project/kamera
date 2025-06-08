@@ -18,6 +18,9 @@ export default function CameraScreen() {
   const isRequesting = useCameraStore((state) => state.isRequesting);
   const setIsRequesting = useCameraStore((state) => state.setIsRequesting);
 
+  const thumbnailUri = useCameraStore((state) => state.thumbnailUri);
+  const getLatestPhoto = useCameraStore((state) => state.getLatestPhoto);
+
   const backCamera = useCameraDevice('back');
   const frontCamera = useCameraDevice('front');
   const initialCameraMode = backCamera || frontCamera;
@@ -36,6 +39,7 @@ export default function CameraScreen() {
         camStatus = 'not-determined';
       }
       setCameraPermission(camStatus);
+      await getLatestPhoto();
     })();
   }, []);
 
@@ -80,8 +84,8 @@ export default function CameraScreen() {
         video={false}
         audio={false}
       />
-      <Footer onTakePhoto={onTakePhoto} />
-    </View>
+      <Footer onTakePhoto={onTakePhoto} thumbnailUri={thumbnailUri} />
+    </View >
   );
 }
 
@@ -99,9 +103,7 @@ const styles = StyleSheet.create({
   },
   cameraPosition: {
     width: SCREEN_WIDTH,
-    aspectRatio: 3 / 4,
-    overflow: 'hidden',
-    backgroundColor: '#000',
+    flex: 1,
   },
   titleText: {
     fontSize: 18,

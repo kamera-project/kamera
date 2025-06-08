@@ -2,18 +2,15 @@ import React from 'react';
 import {
   SafeAreaView,
   View,
-  Text,
   StyleSheet,
   Image,
-  Alert,
+  TouchableOpacity,
 } from 'react-native';
 import HomeBtn from './HomeButton';
 import Sticker from './Sticker';
-import Goback from '../../assets/svg/goback.svg';
 import Gallery from './Gallery';
-import { handleTakePhoto } from '../hooks/useCameraPermissions';
 
-export default function Footer({ onTakePhoto }) {
+export default function Footer({ onTakePhoto, thumbnailUri }) {
   function openGallery() {
     alert('gallery clicked!!');
   }
@@ -25,64 +22,60 @@ export default function Footer({ onTakePhoto }) {
   }
 
   return (
-    <SafeAreaView
-      style={{ width: '100%', height: '20%', justifyContent: 'center' }}
-    >
-      <View style={styles.container}>
-        <View style={styles.firstSpace} />
-        {/* <View style={styles.grid}><Goback /></View> */}
-        <View>
-          <Gallery
-            galleryClick={openGallery}
-            style={styles.icons}
-          />
-        </View>
-        <View style={styles.secondSpace} />
-        <View style={styles.iconsHome}>
-          <HomeBtn
-            homeBtnClick={onTakePhoto}
-            style={styles.icons}
-          />
-        </View>
-        <View style={styles.ThridSpace} />
-        <View>
-          <Sticker
-            stickerClick={openStickerBook}
-            style={styles.icons}
-          />
-        </View>
-        <View style={styles.fourthSpace} />
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.row}>
+        <TouchableOpacity
+          onPress={openGallery}
+        >
+          {thumbnailUri
+            ? <Image source={{ uri: thumbnailUri }} style={styles.icon} />
+            : <Gallery style={styles.icon} />
+          }
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={onTakePhoto} style={styles.captureBtn}>
+          <HomeBtn style={styles.captureCircle} />
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={openStickerBook}>
+          <Sticker style={styles.icon} />
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  safeArea: {
+    width: '100%',
+    height: '15%',
     backgroundColor: '#fff',
   },
-  firstSpace: {
-    width: '10%',
-  },
-  secondSpace: {
-    width: '10%',
-  },
-  ThridSpace: {
-    width: '10%',
-  },
-  fourthSpace: {
-    width: '10%',
-  },
-  fifthSpace: {
-    width: '10%',
-  },
-  iconsHome: {
-    flex: 1,
+  row: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
     alignItems: 'center',
+    justifyContent: 'space-evenly',
+    paddingVertical: 16,
+    position: 'relative',
+  },
+  icon: {
+    width: 48,
+    height: 48,
+    marginHorizontal: 8,
+  },
+  captureBtn: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 2,
+  },
+  captureCircle: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: 'red',
   },
 });
