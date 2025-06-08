@@ -33,8 +33,8 @@ export default function Footer({ onTakePhoto, thumbnailUri }) {
           }
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={onTakePhoto} style={styles.captureBtn}>
-          <HomeBtn style={styles.captureCircle} />
+        <TouchableOpacity onPress={onTakePhoto} style={styles.captureBtnPressed}>
+          <HomeBtn style={styles.captureBtn} />
         </TouchableOpacity>
 
         <TouchableOpacity onPress={openStickerBook}>
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     height: 48,
     marginHorizontal: 8,
   },
-  captureBtn: {
+  captureBtnPressed: {
     width: 64,
     height: 64,
     borderRadius: 32,
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     elevation: 2,
   },
-  captureCircle: {
+  captureBtn: {
     width: 56,
     height: 56,
     borderRadius: 28,
