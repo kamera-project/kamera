@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, StyleSheet, SafeAreaView } from 'react-native';
-import CameraHeader from './src/components/header/Header';
 import CameraScreen from './src/screens/CameraScreen';
 
 export default function App() {
