@@ -1,5 +1,12 @@
-import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Button, Dimensions } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button,
+  Dimensions,
+  Image,
+} from 'react-native';
 import { Camera, useCameraDevice } from 'react-native-vision-camera';
 import Footer from '../components/footer/Footer';
 import { useCameraStore } from '../store/useCameraStore';
@@ -7,11 +14,12 @@ import { handleTakePhoto } from '../utils/camera/takePhoto';
 
 export default function CameraScreen() {
   const cameraRef = useRef(null);
+  const [processedUri, setProcessedUri] = useState(null);
+
   const cameraPermission = useCameraStore((state) => state.cameraPermission);
   const setCameraPermission = useCameraStore(
     (state) => state.setCameraPermission,
   );
-
   const chosenDevice = useCameraStore((state) => state.chosenDevice);
   const setChosenDevice = useCameraStore((state) => state.setChosenDevice);
 
@@ -65,9 +73,31 @@ export default function CameraScreen() {
     );
   }
 
-  const onTakePhoto = () => {
-    handleTakePhoto(cameraRef);
-  };
+  // const onTakePhoto = async () => {
+  //   await handleTakePhoto(cameraRef);
+  // };
+
+  async function onTakePhoto() {
+    try {
+      console.log('dataUri in cameraScreen#1:', dataUri);
+      const dataUri = await handleTakePhoto(cameraRef);
+      setProcessedUri(dataUri);
+      console.log('dataUri in cameraScreen:#2', dataUri);
+    } catch (err) {
+      console.error(err);
+      Alert.alert('오류', '이미지 처리에 실패했습니다.');
+    }
+  }
+
+  if (processedUri) {
+    return (
+      <Image
+        source={{ uri: processedUri }}
+        style={styles.fullScreen}
+        resizeMode='contain'
+      />
+    );
+  }
 
   return (
     <View style={styles.overallBackground}>
@@ -88,6 +118,9 @@ export default function CameraScreen() {
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#000' },
+  camera: { flex: 1, width: SCREEN_WIDTH },
+  fullScreen: { flex: 1, width: SCREEN_WIDTH, backgroundColor: '#000' },
   centerPosition: {
     flex: 1,
     justifyContent: 'center',
