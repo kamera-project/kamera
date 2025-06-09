@@ -6,10 +6,6 @@ import CameraScreen from './src/screens/CameraScreen';
 export default function App() {
   return (
     <View style={styles.screen}>
-      <SafeAreaView style={styles.header}>
-        <CameraHeader />
-      </SafeAreaView>
-
       <SafeAreaView style={styles.main}>
         <CameraScreen />
       </SafeAreaView>
