@@ -16,6 +16,7 @@ import { useCameraStore } from '../store/useCameraStore';
 import { handleTakePhoto } from '../utils/camera/takePhoto';
 import { transparentProcessorHTML } from '../utils/overlay/transparentProcessor';
 import CameraHeader from '../components/header/Header';
+import GalleryScreen from './GalleryScreen';
 
 export default function CameraScreen() {
   const [flash, setFlash] = useState('auto');
@@ -23,6 +24,7 @@ export default function CameraScreen() {
   const webViewRef = useRef(null);
   const [processedUri, setProcessedUri] = useState(null);
   const [transparentOverlay, setTransparentOverlay] = useState(null);
+  const [isGalleryVisible, setIsGalleryVisible] = useState(false);
 
   const cameraPermission = useCameraStore((state) => state.cameraPermission);
   const setCameraPermission = useCameraStore(
@@ -54,6 +56,7 @@ export default function CameraScreen() {
         camStatus = 'not-determined';
       }
       setCameraPermission(camStatus);
+      await getLatestPhoto();
     })();
   }, []);
 
@@ -94,7 +97,7 @@ export default function CameraScreen() {
         } else {
         }
       }, 100);
-    } catch (err) {}
+    } catch (err) { }
   }
 
   const onWebViewMessage = (event) => {
@@ -110,7 +113,6 @@ export default function CameraScreen() {
   if (transparentOverlay) {
     return (
       <View style={styles.overallBackground}>
-        {/* 카메라 프리뷰 */}
         <Camera
           ref={cameraRef}
           device={chosenDevice}
@@ -121,14 +123,13 @@ export default function CameraScreen() {
           audio={false}
         />
 
-        {/* 투명 오버레이 */}
         <Image
           source={{ uri: transparentOverlay }}
           style={[
             styles.cameraPosition,
             {
               position: 'absolute',
-              opacity: 0.6, // 투명도 조절
+              opacity: 0.6,
               backgroundColor: 'transparent',
             },
           ]}
@@ -136,7 +137,6 @@ export default function CameraScreen() {
           fadeDuration={0}
         />
 
-        {/* 다시 촬영 버튼 대신 하단 goback 버튼 */}
         <View style={styles.resetButtonContainer}>
           <Button
             title='RESET'
@@ -153,7 +153,6 @@ export default function CameraScreen() {
     );
   }
 
-  // 에지 검출 후 투명 처리 전
   if (processedUri && !transparentOverlay) {
     return (
       <View style={styles.overallBackground}>
@@ -174,7 +173,6 @@ export default function CameraScreen() {
           style={{ width: 1, height: 1, position: 'absolute' }}
           javaScriptEnabled={true}
           onLoad={() => {
-            // WebView가 로드되면 바로 메시지 전송
             const base64Only = processedUri.split(',')[1];
             webViewRef.current.postMessage(base64Only);
           }}
@@ -182,12 +180,14 @@ export default function CameraScreen() {
         <Text style={styles.processingText}>오버레이 생성 중...</Text>
       </View>
     );
-
-
+  }
 
   const onToggleFlash = () => {
     setFlash(prev => (prev === 'auto' ? 'on' : prev === 'on' ? 'off' : 'auto'));
   }
+
+  const openGallery = () => setIsGalleryVisible(true);
+  const closeGallery = () => setIsGalleryVisible(false);
 
   return (
     <View style={styles.overallBackground}>
@@ -201,10 +201,8 @@ export default function CameraScreen() {
         video={false}
         audio={false}
       />
-      <Footer
-        onTakePhoto={onTakePhoto}
-        thumbnailUri={thumbnailUri}
-      />
+      <Footer onTakePhoto={onTakePhoto} thumbnailUri={thumbnailUri} openGallery={openGallery} />
+      <GalleryScreen visible={isGalleryVisible} onClose={closeGallery} />
     </View>
   );
 }

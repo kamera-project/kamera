@@ -11,15 +11,9 @@ import Sticker from './Sticker';
 import Gallery from './Gallery';
 import { handleTakePhoto } from '../hooks/useCameraPermissions';
 
-export default function Footer({ onTakePhoto, thumbnailUri }) {
-  function openGallery() {
-    alert('gallery clicked!!');
-  }
-  function takePhoto() {
-    alert('shot button clicked!!');
-  }
-  function openStickerBook() {
-    alert('sticker book clicked!!');
+export default function Footer({ onTakePhoto, thumbnailUri, openGallery }) {
+  const openStickerBook = () => {
+    alert('Sticker!');
   }
 
   return (
