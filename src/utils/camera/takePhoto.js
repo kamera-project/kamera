@@ -3,14 +3,14 @@ import RNFS from 'react-native-fs';
 import { CameraRoll } from '@react-native-camera-roll/camera-roll';
 import { useCameraStore } from '../../store/useCameraStore';
 
-// OpenCV로 에지 검출만 수행
-export async function handleTakePhoto(cameraRef) {
-  const photo = await cameraRef.current.takePhoto({
-    flash: 'off',
+export const handleTakePhoto = async (cameraRef, flash) => {
+  const photo = await cameraRef.current.takePhoto({ 
+    flash, 
     qualityPrioritization: 'speed',
     width: 640, // 또는 480
     height: 480, // 또는 360
   });
+  
   const uri = `file://${photo.path}`;
   useCameraStore.getState().setThumbnailUri(uri);
   await CameraRoll.saveAsset(`file://${photo.path}`, {

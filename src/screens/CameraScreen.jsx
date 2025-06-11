@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+
 import {
   View,
   Text,
@@ -7,14 +8,17 @@ import {
   Dimensions,
   Image,
 } from 'react-native';
+
 import { Camera, useCameraDevice } from 'react-native-vision-camera';
 import { WebView } from 'react-native-webview';
 import Footer from '../components/footer/Footer';
 import { useCameraStore } from '../store/useCameraStore';
 import { handleTakePhoto } from '../utils/camera/takePhoto';
 import { transparentProcessorHTML } from '../utils/overlay/transparentProcessor';
+import CameraHeader from '../components/header/Header';
 
 export default function CameraScreen() {
+  const [flash, setFlash] = useState('auto');
   const cameraRef = useRef(null);
   const webViewRef = useRef(null);
   const [processedUri, setProcessedUri] = useState(null);
@@ -81,7 +85,7 @@ export default function CameraScreen() {
 
   async function onTakePhoto() {
     try {
-      const edgeBase64 = await handleTakePhoto(cameraRef);
+      const edgeBase64 = await handleTakePhoto(cameraRef, flash);
       setProcessedUri(`data:image/png;base64,${edgeBase64}`);
 
       setTimeout(() => {
@@ -178,10 +182,16 @@ export default function CameraScreen() {
         <Text style={styles.processingText}>오버레이 생성 중...</Text>
       </View>
     );
+
+
+
+  const onToggleFlash = () => {
+    setFlash(prev => (prev === 'auto' ? 'on' : prev === 'on' ? 'off' : 'auto'));
   }
 
   return (
     <View style={styles.overallBackground}>
+      <CameraHeader flash={flash} onToggleFlash={onToggleFlash} />
       <Camera
         ref={cameraRef}
         device={chosenDevice}
