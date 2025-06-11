@@ -8,13 +8,17 @@ import {
   Image,
 } from 'react-native';
 import { Camera, useCameraDevice } from 'react-native-vision-camera';
+import { WebView } from 'react-native-webview';
 import Footer from '../components/footer/Footer';
 import { useCameraStore } from '../store/useCameraStore';
 import { handleTakePhoto } from '../utils/camera/takePhoto';
+import { transparentProcessorHTML } from '../utils/overlay/transparentProcessor';
 
 export default function CameraScreen() {
   const cameraRef = useRef(null);
+  const webViewRef = useRef(null);
   const [processedUri, setProcessedUri] = useState(null);
+  const [transparentOverlay, setTransparentOverlay] = useState(null);
 
   const cameraPermission = useCameraStore((state) => state.cameraPermission);
   const setCameraPermission = useCameraStore(
@@ -73,29 +77,101 @@ export default function CameraScreen() {
     );
   }
 
-  // const onTakePhoto = async () => {
-  //   await handleTakePhoto(cameraRef);
-  // };
-
   async function onTakePhoto() {
     try {
-      console.log('dataUri in cameraScreen#1:', dataUri);
-      const dataUri = await handleTakePhoto(cameraRef);
-      setProcessedUri(dataUri);
-      console.log('dataUri in cameraScreen:#2', dataUri);
-    } catch (err) {
-      console.error(err);
-      Alert.alert('오류', '이미지 처리에 실패했습니다.');
-    }
+      const edgeBase64 = await handleTakePhoto(cameraRef);
+      setProcessedUri(`data:image/png;base64,${edgeBase64}`);
+
+      setTimeout(() => {
+        if (webViewRef.current) {
+          webViewRef.current.postMessage(edgeBase64);
+        } else {
+        }
+      }, 100);
+    } catch (err) {}
   }
 
-  if (processedUri) {
+  const onWebViewMessage = (event) => {
+    const transparentImage = event.nativeEvent.data;
+    setTransparentOverlay(transparentImage);
+  };
+
+  const resetPhoto = () => {
+    setProcessedUri(null);
+    setTransparentOverlay(null);
+  };
+
+  if (transparentOverlay) {
     return (
-      <Image
-        source={{ uri: processedUri }}
-        style={styles.fullScreen}
-        resizeMode='contain'
-      />
+      <View style={styles.overallBackground}>
+        {/* 카메라 프리뷰 */}
+        <Camera
+          ref={cameraRef}
+          device={chosenDevice}
+          isActive={true}
+          style={styles.cameraPosition}
+          photo={true}
+          video={false}
+          audio={false}
+        />
+
+        {/* 투명 오버레이 */}
+        <Image
+          source={{ uri: transparentOverlay }}
+          style={[
+            styles.cameraPosition,
+            {
+              position: 'absolute',
+              opacity: 0.6, // 투명도 조절
+              backgroundColor: 'transparent',
+            },
+          ]}
+          resizeMode='cover'
+          fadeDuration={0}
+        />
+
+        {/* 다시 촬영 버튼 대신 하단 goback 버튼 */}
+        <View style={styles.resetButtonContainer}>
+          <Button
+            title='RESET'
+            color='#FFF'
+            onPress={resetPhoto}
+          />
+        </View>
+
+        <Footer onTakePhoto={onTakePhoto} />
+      </View>
+    );
+  }
+
+  // 에지 검출 후 투명 처리 전
+  if (processedUri && !transparentOverlay) {
+    return (
+      <View style={styles.overallBackground}>
+        <Camera
+          ref={cameraRef}
+          device={chosenDevice}
+          isActive={true}
+          style={styles.cameraPosition}
+          photo={true}
+          video={false}
+          audio={false}
+        />
+
+        <WebView
+          ref={webViewRef}
+          source={{ html: transparentProcessorHTML }}
+          onMessage={onWebViewMessage}
+          style={{ width: 1, height: 1, position: 'absolute' }}
+          javaScriptEnabled={true}
+          onLoad={() => {
+            // WebView가 로드되면 바로 메시지 전송
+            const base64Only = processedUri.split(',')[1];
+            webViewRef.current.postMessage(base64Only);
+          }}
+        />
+        <Text style={styles.processingText}>오버레이 생성 중...</Text>
+      </View>
     );
   }
 
@@ -141,5 +217,19 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     textAlign: 'center',
     color: 'black',
+  },
+  processingText: {
+    position: 'absolute',
+    top: '50%',
+    left: 0,
+    right: 0,
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 16,
+  },
+  resetButtonContainer: {
+    position: 'absolute',
+    top: '66%',
+    right: 20,
   },
 });
