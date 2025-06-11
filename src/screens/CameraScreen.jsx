@@ -1,11 +1,13 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, Button, Dimensions } from 'react-native';
 import { Camera, useCameraDevice } from 'react-native-vision-camera';
 import Footer from '../components/footer/Footer';
 import { useCameraStore } from '../store/useCameraStore';
 import { handleTakePhoto } from '../utils/camera/takePhoto';
+import CameraHeader from '../components/header/Header';
 
 export default function CameraScreen() {
+  const [flash, setFlash] = useState('auto');
   const cameraRef = useRef(null);
   const cameraPermission = useCameraStore((state) => state.cameraPermission);
   const setCameraPermission = useCameraStore(
@@ -70,11 +72,16 @@ export default function CameraScreen() {
   }
 
   const onTakePhoto = () => {
-    handleTakePhoto(cameraRef);
+    handleTakePhoto(cameraRef, flash);
   };
+
+  const onToggleFlash = () => {
+    setFlash(prev => (prev === 'auto' ? 'on' : prev === 'on' ? 'off' : 'auto'));
+  }
 
   return (
     <View style={styles.overallBackground}>
+      <CameraHeader flash={flash} onToggleFlash={onToggleFlash} />
       <Camera
         ref={cameraRef}
         device={chosenDevice}
