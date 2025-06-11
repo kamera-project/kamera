@@ -9,6 +9,7 @@ import {
 import HomeBtn from './HomeButton';
 import Sticker from './Sticker';
 import Gallery from './Gallery';
+import { handleTakePhoto } from '../hooks/useCameraPermissions';
 
 export default function Footer({ onTakePhoto, thumbnailUri, openGallery }) {
   const openStickerBook = () => {
@@ -18,16 +19,21 @@ export default function Footer({ onTakePhoto, thumbnailUri, openGallery }) {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.row}>
-        <TouchableOpacity
-          onPress={openGallery}
-        >
-          {thumbnailUri
-            ? <Image source={{ uri: thumbnailUri }} style={styles.icon} />
-            : <Gallery style={styles.icon} />
-          }
+        <TouchableOpacity onPress={openGallery}>
+          {thumbnailUri ? (
+            <Image
+              source={{ uri: thumbnailUri }}
+              style={styles.icon}
+            />
+          ) : (
+            <Gallery style={styles.icon} />
+          )}
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={onTakePhoto} style={styles.captureBtnPressed}>
+        <TouchableOpacity
+          onPress={onTakePhoto}
+          style={styles.captureBtnPressed}
+        >
           <HomeBtn style={styles.captureBtn} />
         </TouchableOpacity>
 
