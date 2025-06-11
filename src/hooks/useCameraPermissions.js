@@ -1,7 +1,7 @@
 import { Camera, useCameraDevice } from 'react-native-vision-camera';
 import { useEffect, useRef, useState } from 'react';
 
-export function userCameraPermissions() {
+export function useCameraPermissions() {
   const cameraRef = useRef(null);
   const [cameraPermission, setCameraPermission] = useState(null);
   const [isRequesting, setIsRequesting] = useState(false);

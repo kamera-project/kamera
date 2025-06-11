@@ -1,5 +1,7 @@
 import { OpenCV, ObjectType, DataTypes } from 'react-native-fast-opencv';
 import RNFS from 'react-native-fs';
+import { CameraRoll } from '@react-native-camera-roll/camera-roll';
+import { useCameraStore } from '../../store/useCameraStore';
 
 // OpenCV로 에지 검출만 수행
 export async function handleTakePhoto(cameraRef) {
@@ -9,6 +11,12 @@ export async function handleTakePhoto(cameraRef) {
     width: 640, // 또는 480
     height: 480, // 또는 360
   });
+  const uri = `file://${photo.path}`;
+  useCameraStore.getState().setThumbnailUri(uri);
+  await CameraRoll.saveAsset(`file://${photo.path}`, {
+    type: 'photo',
+  });
+
   const base64jpg = await RNFS.readFile(photo.path, 'base64');
   const srcMat = OpenCV.base64ToMat(base64jpg);
   const rotatedMat = OpenCV.createObject(

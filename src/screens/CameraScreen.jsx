@@ -29,6 +29,8 @@ export default function CameraScreen() {
 
   const isRequesting = useCameraStore((state) => state.isRequesting);
   const setIsRequesting = useCameraStore((state) => state.setIsRequesting);
+  const thumbnailUri = useCameraStore((state) => state.thumbnailUri);
+  const getLatestPhoto = useCameraStore((state) => state.getLatestPhoto);
 
   const backCamera = useCameraDevice('back');
   const frontCamera = useCameraDevice('front');
@@ -139,7 +141,10 @@ export default function CameraScreen() {
           />
         </View>
 
-        <Footer onTakePhoto={onTakePhoto} />
+        <Footer
+          onTakePhoto={onTakePhoto}
+          thumbnailUri={thumbnailUri}
+        />
       </View>
     );
   }
@@ -186,7 +191,10 @@ export default function CameraScreen() {
         video={false}
         audio={false}
       />
-      <Footer onTakePhoto={onTakePhoto} />
+      <Footer
+        onTakePhoto={onTakePhoto}
+        thumbnailUri={thumbnailUri}
+      />
     </View>
   );
 }
