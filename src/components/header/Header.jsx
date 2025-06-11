@@ -34,12 +34,12 @@ export default function CameraHeader({ flash, onToggleFlash }) {
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
+
   },
   icon: {
     padding: 8,

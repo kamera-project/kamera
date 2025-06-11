@@ -7,6 +7,7 @@ import {
   Button,
   Dimensions,
   Image,
+  SafeAreaView,
 } from 'react-native';
 
 import { Camera, useCameraDevice } from 'react-native-vision-camera';
@@ -110,78 +111,6 @@ export default function CameraScreen() {
     setTransparentOverlay(null);
   };
 
-  if (transparentOverlay) {
-    return (
-      <View style={styles.overallBackground}>
-        <Camera
-          ref={cameraRef}
-          device={chosenDevice}
-          isActive={true}
-          style={styles.cameraPosition}
-          photo={true}
-          video={false}
-          audio={false}
-        />
-
-        <Image
-          source={{ uri: transparentOverlay }}
-          style={[
-            styles.cameraPosition,
-            {
-              position: 'absolute',
-              opacity: 0.6,
-              backgroundColor: 'transparent',
-            },
-          ]}
-          resizeMode='cover'
-          fadeDuration={0}
-        />
-
-        <View style={styles.resetButtonContainer}>
-          <Button
-            title='RESET'
-            color='#FFF'
-            onPress={resetPhoto}
-          />
-        </View>
-
-        <Footer
-          onTakePhoto={onTakePhoto}
-          thumbnailUri={thumbnailUri}
-        />
-      </View>
-    );
-  }
-
-  if (processedUri && !transparentOverlay) {
-    return (
-      <View style={styles.overallBackground}>
-        <Camera
-          ref={cameraRef}
-          device={chosenDevice}
-          isActive={true}
-          style={styles.cameraPosition}
-          photo={true}
-          video={false}
-          audio={false}
-        />
-
-        <WebView
-          ref={webViewRef}
-          source={{ html: transparentProcessorHTML }}
-          onMessage={onWebViewMessage}
-          style={{ width: 1, height: 1, position: 'absolute' }}
-          javaScriptEnabled={true}
-          onLoad={() => {
-            const base64Only = processedUri.split(',')[1];
-            webViewRef.current.postMessage(base64Only);
-          }}
-        />
-        <Text style={styles.processingText}>오버레이 생성 중...</Text>
-      </View>
-    );
-  }
-
   const onToggleFlash = () => {
     setFlash(prev => (prev === 'auto' ? 'on' : prev === 'on' ? 'off' : 'auto'));
   }
@@ -189,18 +118,70 @@ export default function CameraScreen() {
   const openGallery = () => setIsGalleryVisible(true);
   const closeGallery = () => setIsGalleryVisible(false);
 
+  const isFront = chosenDevice.position === 'front';
+
   return (
     <View style={styles.overallBackground}>
-      <CameraHeader flash={flash} onToggleFlash={onToggleFlash} />
-      <Camera
-        ref={cameraRef}
-        device={chosenDevice}
-        isActive={true}
-        style={styles.cameraPosition}
-        photo={true}
-        video={false}
-        audio={false}
-      />
+      <SafeAreaView>
+        <CameraHeader flash={flash} onToggleFlash={onToggleFlash} />
+      </SafeAreaView>
+      <View>
+        <Camera
+          ref={cameraRef}
+          device={chosenDevice}
+          isActive={true}
+          style={styles.cameraPosition}
+          photo={true}
+          video={false}
+          audio={false}
+        />
+
+        {processedUri && !transparentOverlay && (
+          <WebView
+            ref={webViewRef}
+            source={{ html: transparentProcessorHTML }}
+            onMessage={onWebViewMessage}
+            style={{
+              width: 1,
+              height: 1,
+              position: 'absolute',
+            }}
+            javaScriptEnabled
+            onLoad={() => {
+              const base64Only = processedUri.split(',')[1];
+              webViewRef.current.postMessage(base64Only);
+            }}
+          />
+        )}
+
+        {processedUri && !transparentOverlay && (
+          <Text style={styles.processingText}>오버레이 생성 중...</Text>
+        )}
+
+        {transparentOverlay && (
+          <Image
+            source={{ uri: transparentOverlay }}
+            resizeMode="cover"
+            style={[
+              styles.cameraPosition,
+              {
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                opacity: 0.3,
+                backgroundColor: 'transparent',
+                transform: isFront ? [{ scaleX: -1 }] : undefined,
+              },
+            ]}
+          />
+        )}
+
+        {transparentOverlay && (
+          <View style={styles.resetButtonContainer}>
+            <Button title="RESET" color="#FFF" onPress={resetPhoto} />
+          </View>
+        )}
+      </View>
       <Footer onTakePhoto={onTakePhoto} thumbnailUri={thumbnailUri} openGallery={openGallery} />
       <GalleryScreen visible={isGalleryVisible} onClose={closeGallery} />
     </View>
@@ -210,9 +191,6 @@ export default function CameraScreen() {
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000' },
-  camera: { flex: 1, width: SCREEN_WIDTH },
-  fullScreen: { flex: 1, width: SCREEN_WIDTH, backgroundColor: '#000' },
   centerPosition: {
     flex: 1,
     justifyContent: 'center',
@@ -227,6 +205,12 @@ const styles = StyleSheet.create({
     aspectRatio: 3 / 4,
     overflow: 'hidden',
     backgroundColor: '#000',
+  },
+  cameraWrapper: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    overflow: 'hidden',
   },
   titleText: {
     fontSize: 18,
@@ -245,7 +229,10 @@ const styles = StyleSheet.create({
   },
   resetButtonContainer: {
     position: 'absolute',
-    top: '66%',
+    bottom: '0%',
     right: 20,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 6,
   },
 });
