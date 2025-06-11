@@ -10,15 +10,9 @@ import HomeBtn from './HomeButton';
 import Sticker from './Sticker';
 import Gallery from './Gallery';
 
-export default function Footer({ onTakePhoto, thumbnailUri }) {
-  function openGallery() {
-    alert('gallery clicked!!');
-  }
-  function takePhoto() {
-    alert('shot button clicked!!');
-  }
-  function openStickerBook() {
-    alert('sticker book clicked!!');
+export default function Footer({ onTakePhoto, thumbnailUri, openGallery }) {
+  const openStickerBook = () => {
+    alert('Sticker!');
   }
 
   return (

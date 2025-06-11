@@ -1,12 +1,15 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, Button, Dimensions } from 'react-native';
 import { Camera, useCameraDevice } from 'react-native-vision-camera';
 import Footer from '../components/footer/Footer';
 import { useCameraStore } from '../store/useCameraStore';
 import { handleTakePhoto } from '../utils/camera/takePhoto';
+import GalleryScreen from './GalleryScreen';
 
 export default function CameraScreen() {
   const cameraRef = useRef(null);
+  const [isGalleryVisible, setIsGalleryVisible] = useState(false);
+
   const cameraPermission = useCameraStore((state) => state.cameraPermission);
   const setCameraPermission = useCameraStore(
     (state) => state.setCameraPermission,
@@ -73,6 +76,9 @@ export default function CameraScreen() {
     handleTakePhoto(cameraRef);
   };
 
+  const openGallery = () => setIsGalleryVisible(true);
+  const closeGallery = () => setIsGalleryVisible(false);
+
   return (
     <View style={styles.overallBackground}>
       <Camera
@@ -84,7 +90,8 @@ export default function CameraScreen() {
         video={false}
         audio={false}
       />
-      <Footer onTakePhoto={onTakePhoto} thumbnailUri={thumbnailUri} />
+      <Footer onTakePhoto={onTakePhoto} thumbnailUri={thumbnailUri} openGallery={openGallery} />
+      <GalleryScreen visible={isGalleryVisible} onClose={closeGallery} />
     </View >
   );
 }
