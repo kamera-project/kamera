@@ -26,7 +26,7 @@ export default function CameraHeader({ flash, onToggleFlash }) {
         {flash === 'off' && <FlashOffIcon width={40} height={40} />}
       </TouchableOpacity>
       <TouchableOpacity onPress={onToggleCamera} style={styles.icon}>
-        <FlipCameraIcon width={40} height={40} />
+        <FlipCameraIcon width={46} height={46} />
       </TouchableOpacity>
     </View>
   );
@@ -42,6 +42,8 @@ const styles = StyleSheet.create({
 
   },
   icon: {
-    padding: 8,
-  }
+    width: 48,
+    height: 48,
+    marginHorizontal: 8,
+  },
 });
