@@ -1,9 +1,7 @@
 import GalleryIcon from '../../assets/svg/gallery.svg';
 
-export default function Gallery({ galleryClick }) {
+export default function Gallery() {
   return (
-    <>
-      <GalleryIcon onTouchStart={galleryClick} />
-    </>
+    <GalleryIcon />
   );
 }

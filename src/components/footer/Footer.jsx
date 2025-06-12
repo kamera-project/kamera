@@ -9,7 +9,6 @@ import {
 import HomeBtn from './HomeButton';
 import Sticker from './Sticker';
 import Gallery from './Gallery';
-import { handleTakePhoto } from '../hooks/useCameraPermissions';
 
 export default function Footer({ onTakePhoto, thumbnailUri, openGallery }) {
   const openStickerBook = () => {

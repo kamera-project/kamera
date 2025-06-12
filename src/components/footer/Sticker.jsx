@@ -1,9 +1,7 @@
 import StickerIcon from '../../assets/svg/smile.svg';
 
-export default function Sticker({ stickerClick }) {
+export default function Sticker() {
   return (
-    <>
-      <StickerIcon onTouchStart={stickerClick} />
-    </>
+    <StickerIcon />
   );
 }
