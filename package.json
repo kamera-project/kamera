@@ -14,6 +14,7 @@
     "@react-native-camera-roll/camera-roll": "^7.10.0",
     "react": "19.0.0",
     "react-native": "0.78",
+    "react-native-bottom-sheet": "^1.0.3",
     "react-native-clean-project": "^4.0.3",
     "react-native-cli": "2.0.1",
     "react-native-fast-opencv": "^0.4.5",

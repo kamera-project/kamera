@@ -17,6 +17,7 @@ import { handleTakePhoto } from '../utils/camera/takePhoto';
 import { transparentProcessorHTML } from '../utils/overlay/transparentProcessor';
 import CameraHeader from '../components/header/Header';
 import GalleryScreen from './GalleryScreen';
+import { detectImageFormat } from '../utils/detectImageFormat';
 
 export default function CameraScreen() {
   const [flash, setFlash] = useState('auto');
@@ -89,7 +90,8 @@ export default function CameraScreen() {
   async function onTakePhoto() {
     try {
       const edgeBase64 = await handleTakePhoto(cameraRef, flash);
-      setProcessedUri(`data:image/png;base64,${edgeBase64}`);
+      const edgedFormat = detectImageFormat(edgeBase64);
+      setProcessedUri(`data:image/${edgedFormat};base64,${edgeBase64}`);
 
       setTimeout(() => {
         if (webViewRef.current) {
@@ -97,7 +99,7 @@ export default function CameraScreen() {
         } else {
         }
       }, 100);
-    } catch (err) { }
+    } catch (err) {}
   }
 
   const onWebViewMessage = (event) => {
@@ -183,15 +185,20 @@ export default function CameraScreen() {
   }
 
   const onToggleFlash = () => {
-    setFlash(prev => (prev === 'auto' ? 'on' : prev === 'on' ? 'off' : 'auto'));
-  }
+    setFlash((prev) =>
+      prev === 'auto' ? 'on' : prev === 'on' ? 'off' : 'auto',
+    );
+  };
 
   const openGallery = () => setIsGalleryVisible(true);
   const closeGallery = () => setIsGalleryVisible(false);
 
   return (
     <View style={styles.overallBackground}>
-      <CameraHeader flash={flash} onToggleFlash={onToggleFlash} />
+      <CameraHeader
+        flash={flash}
+        onToggleFlash={onToggleFlash}
+      />
       <Camera
         ref={cameraRef}
         device={chosenDevice}
@@ -201,8 +208,15 @@ export default function CameraScreen() {
         video={false}
         audio={false}
       />
-      <Footer onTakePhoto={onTakePhoto} thumbnailUri={thumbnailUri} openGallery={openGallery} />
-      <GalleryScreen visible={isGalleryVisible} onClose={closeGallery} />
+      <Footer
+        onTakePhoto={onTakePhoto}
+        thumbnailUri={thumbnailUri}
+        openGallery={openGallery}
+      />
+      <GalleryScreen
+        visible={isGalleryVisible}
+        onClose={closeGallery}
+      />
     </View>
   );
 }

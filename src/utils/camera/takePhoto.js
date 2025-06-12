@@ -7,11 +7,13 @@ export const handleTakePhoto = async (cameraRef, flash) => {
   const photo = await cameraRef.current.takePhoto({
     flash,
     qualityPrioritization: 'speed',
-    width: 640, // 또는 480
-    height: 480, // 또는 360
+    enableShutterSound: false,
   });
 
-  const uri = `file://${photo.path}`;
+  const uri = photo.path.startsWith('file://')
+    ? photo.path
+    : `file://${photo.path}`;
+
   useCameraStore.getState().setThumbnailUri(uri);
   await CameraRoll.saveAsset(`file://${photo.path}`, {
     type: 'photo',

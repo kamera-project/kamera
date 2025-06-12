@@ -270,7 +270,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = XC6ZDTQ6C5;
+				DEVELOPMENT_TEAM = RMFG2ZY436;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = kamera/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
@@ -285,7 +285,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.kamera.bnr;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.kamera.bnrKorea;
 				PRODUCT_NAME = kamera;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -303,7 +303,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = XC6ZDTQ6C5;
+				DEVELOPMENT_TEAM = RMFG2ZY436;
 				INFOPLIST_FILE = kamera/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -317,7 +317,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.kamera.bnr;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.kamera.bnrKorea;
 				PRODUCT_NAME = kamera;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
