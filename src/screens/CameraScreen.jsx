@@ -18,6 +18,7 @@ import { transparentProcessorHTML } from '../utils/overlay/transparentProcessor'
 import CameraHeader from '../components/header/Header';
 import GalleryScreen from './GalleryScreen';
 import { detectImageFormat } from '../utils/detectImageFormat';
+import { binaryImageProcessor } from '../utils/overlay/binaryImageProcessor';
 
 export default function CameraScreen() {
   const [flash, setFlash] = useState('auto');
@@ -89,7 +90,9 @@ export default function CameraScreen() {
 
   async function onTakePhoto() {
     try {
-      const edgeBase64 = await handleTakePhoto(cameraRef, flash);
+      // const edgeBase64 = await handleTakePhoto(cameraRef, flash);
+      const photoPath = await handleTakePhoto(cameraRef, flash);
+      const edgeBase64 = await binaryImageProcessor(photoPath);
       const edgedFormat = detectImageFormat(edgeBase64);
       setProcessedUri(`data:image/${edgedFormat};base64,${edgeBase64}`);
 
