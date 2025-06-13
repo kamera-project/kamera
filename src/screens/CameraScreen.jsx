@@ -106,7 +106,6 @@ export default function CameraScreen() {
     <Modal
       visible={isBottomSheetVisible}
       transparent={true}
-      animationType='none'
       onRequestClose={closeBottomSheet}
     >
       <TouchableOpacity
@@ -129,7 +128,36 @@ export default function CameraScreen() {
               style={bottomSheetStyles.scrollView}
               showsVerticalScrollIndicator={true}
             >
-              <View style={bottomSheetStyles.stickerGrid}></View>
+              <View style={bottomSheetStyles.stickerGrid}>
+                {[
+                  '😀',
+                  '😎',
+                  '🎉',
+                  '❤️',
+                  '⭐',
+                  '🌈',
+                  '🎨',
+                  '🎭',
+                  '🎪',
+                  '🎯',
+                  '🎲',
+                  '🎸',
+                  '🎤',
+                  '🎧',
+                  '🎮',
+                  '🎬',
+                  '🎺',
+                  '🥳',
+                ].map((sticker, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={bottomSheetStyles.stickerItem}
+                    onPress={() => handleStickerSelect(sticker)}
+                  >
+                    <Text style={bottomSheetStyles.stickerText}>{sticker}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
             </ScrollView>
           </TouchableOpacity>
         </Animated.View>
