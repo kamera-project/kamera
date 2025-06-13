@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, StyleSheet, SafeAreaView } from 'react-native';
 import CameraScreen from './src/screens/CameraScreen';
+import SplashScreen from 'react-native-splash-screen';
 
 export default function App() {
+  useEffect(() => {
+    setTimeout(() => {
+      SplashScreen.hide();
+    }, 1000);
+  });
+
   return (
     <View style={styles.screen}>
       <SafeAreaView style={styles.main}>
@@ -14,20 +21,8 @@ export default function App() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  header: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    backgroundColor: 'lightgray',
-  },
   main: {
     flex: 7,
     backgroundColor: 'white',
-  },
-  title: { fontSize: 24, marginBottom: 20 },
-  preview: {
-    height: '100%',
-    resizeMode: 'contain',
   },
 });
