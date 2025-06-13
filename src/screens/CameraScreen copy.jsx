@@ -1,29 +1,31 @@
-// takephoto 에서 uri 를 받아온다
-// uri를 투명처리를 할 transparentProcessor.js (웹뷰) (투명, 굵기 처리)
-
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import {
   View,
   Text,
   StyleSheet,
   Button,
+  Modal,
   Dimensions,
   Image,
-  TouchableOpacity,
-  ScrollView,
-  Modal,
-  Animated,
-  PanResponder,
+  SafeAreaView,
+  Pressable,
 } from 'react-native';
 
-import { Camera, useCameraDevice } from 'react-native-vision-camera';
+import {
+  Camera,
+  useCameraDevice,
+  useCameraFormat,
+} from 'react-native-vision-camera';
 import { WebView } from 'react-native-webview';
 import Footer from '../components/footer/Footer';
 import { useCameraStore } from '../store/useCameraStore';
 import { handleTakePhoto } from '../utils/camera/takePhoto';
 import { transparentProcessorHTML } from '../utils/overlay/transparentProcessor';
 import CameraHeader from '../components/header/Header';
+import GalleryScreen from './GalleryScreen';
+import { detectImageFormat } from '../utils/detectImageFormat';
+import { binaryImageProcessor } from '../utils/overlay/binaryImageProcessor';
 
 export default function CameraScreen() {
   const [flash, setFlash] = useState('auto');
@@ -31,10 +33,8 @@ export default function CameraScreen() {
   const webViewRef = useRef(null);
   const [processedUri, setProcessedUri] = useState(null);
   const [transparentOverlay, setTransparentOverlay] = useState(null);
-
-  // Bottom Sheet state 추가
-  const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
-  const bottomSheetHeight = useRef(new Animated.Value(0)).current;
+  const [isGalleryVisible, setIsGalleryVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const cameraPermission = useCameraStore((state) => state.cameraPermission);
   const setCameraPermission = useCameraStore(
@@ -51,6 +51,9 @@ export default function CameraScreen() {
   const backCamera = useCameraDevice('back');
   const frontCamera = useCameraDevice('front');
   const initialCameraMode = backCamera || frontCamera;
+  const format = useCameraFormat(chosenDevice, [
+    { aspectRatio: { width: 16, height: 9 } }, // 16:9 비율로 설정
+  ]);
 
   useEffect(() => {
     if (initialCameraMode) {
@@ -66,6 +69,7 @@ export default function CameraScreen() {
         camStatus = 'not-determined';
       }
       setCameraPermission(camStatus);
+      await getLatestPhoto();
     })();
   }, []);
 
@@ -75,92 +79,6 @@ export default function CameraScreen() {
     setCameraPermission(newCamStatus);
     setIsRequesting(false);
   }
-
-  const openStickerSheet = useCallback(() => {
-    console.log('sticker function');
-    setIsBottomSheetVisible(true);
-    Animated.timing(bottomSheetHeight, {
-      toValue: SCREEN_WIDTH * 0.8,
-      duration: 300,
-      useNativeDriver: false,
-    }).start();
-  }, []);
-
-  const closeBottomSheet = () => {
-    Animated.timing(bottomSheetHeight, {
-      toValue: 0,
-      duration: 300,
-      useNativeDriver: false,
-    }).start(() => {
-      setIsBottomSheetVisible(false);
-    });
-  };
-
-  const handleStickerSelect = (sticker) => {
-    console.log('Selected sticker:', sticker);
-    // 여기에 스티커 선택 후 로직 추가
-    closeBottomSheet();
-  };
-
-  const renderBottomSheet = () => (
-    <Modal
-      visible={isBottomSheetVisible}
-      transparent={true}
-      animationType='none'
-      onRequestClose={closeBottomSheet}
-    >
-      <TouchableOpacity
-        style={bottomSheetStyles.modalOverlay}
-        activeOpacity={1}
-        onPress={closeBottomSheet}
-      >
-        <Animated.View
-          style={[
-            bottomSheetStyles.bottomSheet,
-            {
-              height: bottomSheetHeight,
-            },
-          ]}
-        >
-          <TouchableOpacity activeOpacity={1}>
-            <View style={bottomSheetStyles.handle} />
-            <Text style={bottomSheetStyles.title}>스티커 선택</Text>
-            <ScrollView
-              style={bottomSheetStyles.scrollView}
-              showsVerticalScrollIndicator={true}
-            >
-              <View style={bottomSheetStyles.stickerGrid}></View>
-            </ScrollView>
-          </TouchableOpacity>
-        </Animated.View>
-      </TouchableOpacity>
-    </Modal>
-  );
-
-  async function onTakePhoto() {
-    try {
-      const edgeBase64 = await handleTakePhoto(cameraRef, flash);
-
-      setProcessedUri(`data:image/png;base64,${edgeBase64}`);
-
-      setTimeout(() => {
-        if (webViewRef.current) {
-          webViewRef.current.postMessage(edgeBase64);
-        } else {
-        }
-      }, 100);
-    } catch (err) {}
-  }
-
-  const onWebViewMessage = (event) => {
-    const transparentImage = event.nativeEvent.data;
-    setTransparentOverlay(transparentImage);
-  };
-
-  const resetPhoto = () => {
-    setProcessedUri(null);
-    setTransparentOverlay(null);
-  };
 
   if (
     cameraPermission === null ||
@@ -181,10 +99,35 @@ export default function CameraScreen() {
     );
   }
 
+  async function onTakePhoto() {
+    try {
+      const photoPath = await handleTakePhoto(cameraRef, flash);
+      const edgeBase64 = await binaryImageProcessor(photoPath);
+      const edgedFormat = detectImageFormat(edgeBase64);
+      setProcessedUri(`data:image/${edgedFormat};base64,${edgeBase64}`);
+
+      setTimeout(() => {
+        if (webViewRef.current) {
+          webViewRef.current.postMessage(edgeBase64);
+        } else {
+        }
+      }, 100);
+    } catch (err) {}
+  }
+
+  const onWebViewMessage = (event) => {
+    const transparentImage = event.nativeEvent.data;
+    setTransparentOverlay(transparentImage);
+  };
+
+  const resetPhoto = () => {
+    setProcessedUri(null);
+    setTransparentOverlay(null);
+  };
+
   if (transparentOverlay) {
     return (
       <View style={styles.overallBackground}>
-        {/* 카메라 프리뷰 */}
         <Camera
           ref={cameraRef}
           device={chosenDevice}
@@ -193,24 +136,21 @@ export default function CameraScreen() {
           photo={true}
           video={false}
           audio={false}
+          resizeMode='cover'
         />
-
-        {/* 투명 오버레이 */}
         <Image
           source={{ uri: transparentOverlay }}
           style={[
             styles.cameraPosition,
             {
               position: 'absolute',
-              opacity: 0.6, // 투명도 조절
+              opacity: 0.6,
               backgroundColor: 'transparent',
             },
           ]}
           resizeMode='cover'
           fadeDuration={0}
         />
-
-        {/* 다시 촬영 버튼 대신 하단 goback 버튼 */}
         <View style={styles.resetButtonContainer}>
           <Button
             title='RESET'
@@ -218,20 +158,29 @@ export default function CameraScreen() {
             onPress={resetPhoto}
           />
         </View>
-
         <Footer
           onTakePhoto={onTakePhoto}
           thumbnailUri={thumbnailUri}
-          onStickerPress={openStickerSheet} // 스티커 버튼 핸들러 추가
         />
-
-        {/* Bottom Sheet 추가 */}
-        {renderBottomSheet()}
+        <View style={{ marginTop: 400 }}>
+          <Modal
+            animationType='slide'
+            visible={isModalVisible}
+            transparent={true}
+          >
+            <View style={styles.modalView}>
+              <View>
+                <Text style={styles.modalTextStyle}>
+                  Modal이 출력되는 영역입니다.
+                </Text>
+              </View>
+            </View>
+          </Modal>
+        </View>
       </View>
     );
   }
 
-  // 에지 검출 후 투명 처리 전
   if (processedUri && !transparentOverlay) {
     return (
       <View style={styles.overallBackground}>
@@ -243,6 +192,7 @@ export default function CameraScreen() {
           photo={true}
           video={false}
           audio={false}
+          resizeMode='cover'
         />
 
         <WebView
@@ -252,7 +202,6 @@ export default function CameraScreen() {
           style={{ width: 1, height: 1, position: 'absolute' }}
           javaScriptEnabled={true}
           onLoad={() => {
-            // WebView가 로드되면 바로 메시지 전송
             const base64Only = processedUri.split(',')[1];
             webViewRef.current.postMessage(base64Only);
           }}
@@ -261,36 +210,80 @@ export default function CameraScreen() {
       </View>
     );
   }
+  const onPressModalOpen = () => {
+    console.log('팝업을 여는 중입니다.');
+    setIsModalVisible(true);
+  };
+
+  const onPressModalClose = () => {
+    setIsModalVisible(false);
+  };
   const onToggleFlash = () => {
     setFlash((prev) =>
       prev === 'auto' ? 'on' : prev === 'on' ? 'off' : 'auto',
     );
   };
 
+  const openGallery = () => setIsGalleryVisible(true);
+  const closeGallery = () => setIsGalleryVisible(false);
+
   return (
-    <View style={styles.overallBackground}>
+    <SafeAreaView style={styles.overallBackground}>
       <CameraHeader
         flash={flash}
         onToggleFlash={onToggleFlash}
       />
-      <Camera
-        ref={cameraRef}
-        device={chosenDevice}
-        isActive={true}
-        style={styles.cameraPosition}
-        photo={true}
-        video={false}
-        audio={false}
-      />
+      <View style={{ flex: 7 }}>
+        <Camera
+          ref={cameraRef}
+          device={chosenDevice}
+          isActive={true}
+          style={styles.cameraPosition}
+          photo={true}
+          video={false}
+          audio={false}
+          resizeMode='cover'
+        />
+      </View>
       <Footer
         onTakePhoto={onTakePhoto}
         thumbnailUri={thumbnailUri}
-        onStickerPress={openStickerSheet} // 스티커 버튼 핸들러 추가
+        openGallery={openGallery}
+        onPressModalOpen={onPressModalOpen}
+        onPressModalClose={onPressModalClose}
       />
+      <View style={styles.container}>
+        <View style={styles.viewContainer}>
+          <Text style={styles.textStyle}>화면을 출력하는 영역입니다~!</Text>
+          <Pressable onPress={onPressModalOpen}>
+            <Text style={styles.textStyle}>Modal Open!</Text>
+          </Pressable>
+        </View>
 
-      {/* Bottom Sheet 추가 */}
-      {renderBottomSheet()}
-    </View>
+        <View style={{ marginTop: 400 }}>
+          <Modal
+            animationType='slide'
+            visible={isModalVisible}
+            transparent={true}
+          >
+            <View style={styles.modalView}>
+              <View>
+                <Text style={styles.modalTextStyle}>
+                  Modal이 출력되는 영역입니다.
+                </Text>
+              </View>
+              <Pressable onPress={onPressModalClose}>
+                <Text>Modal Close!</Text>
+              </Pressable>
+            </View>
+          </Modal>
+        </View>
+      </View>
+      <GalleryScreen
+        visible={isGalleryVisible}
+        onClose={closeGallery}
+      />
+    </SafeAreaView>
   );
 }
 
@@ -310,6 +303,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   cameraPosition: {
+    flex: 7,
     width: SCREEN_WIDTH,
     aspectRatio: 3 / 4,
     overflow: 'hidden',
@@ -335,71 +329,50 @@ const styles = StyleSheet.create({
     top: '66%',
     right: 20,
   },
-});
+  container: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#17191c',
+  },
 
-// Bottom Sheet 스타일 추가
-const bottomSheetStyles = StyleSheet.create({
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    justifyContent: 'flex-end',
-  },
-  bottomSheet: {
-    backgroundColor: 'white',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingTop: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: -2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  handle: {
-    width: 40,
-    height: 4,
-    backgroundColor: '#DDDDDD',
-    borderRadius: 2,
-    alignSelf: 'center',
-    marginBottom: 10,
-  },
-  title: {
-    fontSize: 20,
+  /**
+   * 일반 화면 영역
+   */
+  textStyle: {
+    color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 20,
-    paddingHorizontal: 20,
+    marginBottom: 50,
   },
-  scrollView: {
-    paddingHorizontal: 20,
-  },
-  stickerGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    paddingBottom: 20,
-  },
-  stickerItem: {
-    width: '30%',
-    aspectRatio: 1,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 12,
-    marginBottom: 10,
+  viewContainer: {
     justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 400,
+  },
+
+  /**
+   * 모달 화면 영역
+   */
+  modalView: {
+    marginTop: 230,
+    margin: 30,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 1,
+      height: 2,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
-  stickerText: {
-    fontSize: 36,
+  modalTextStyle: {
+    color: '#17191c',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 50,
   },
 });

@@ -61,9 +61,12 @@ export default function Footer({
 
 const styles = StyleSheet.create({
   safeArea: {
-    width: '100%',
-    height: '15%',
-    backgroundColor: '#fff',
+    flex: 2,
+    // position: 'absolute',
+    // bottom: 0,
+    // width: '100%',
+    // height: '15%',
+    // backgroundColor: '#fff',
   },
   row: {
     flexDirection: 'row',
