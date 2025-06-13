@@ -7,7 +7,6 @@ import {
   Button,
   Dimensions,
   Image,
-  SafeAreaView,
 } from 'react-native';
 
 import { Camera, useCameraDevice } from 'react-native-vision-camera';
@@ -122,9 +121,7 @@ export default function CameraScreen() {
 
   return (
     <View style={styles.overallBackground}>
-      <SafeAreaView>
-        <CameraHeader flash={flash} onToggleFlash={onToggleFlash} />
-      </SafeAreaView>
+      <CameraHeader flash={flash} onToggleFlash={onToggleFlash} />
       <View>
         <Camera
           ref={cameraRef}
@@ -189,6 +186,7 @@ export default function CameraScreen() {
 }
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   centerPosition: {
@@ -205,12 +203,6 @@ const styles = StyleSheet.create({
     aspectRatio: 3 / 4,
     overflow: 'hidden',
     backgroundColor: '#000',
-  },
-  cameraWrapper: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    overflow: 'hidden',
   },
   titleText: {
     fontSize: 18,
@@ -229,10 +221,10 @@ const styles = StyleSheet.create({
   },
   resetButtonContainer: {
     position: 'absolute',
-    bottom: '0%',
-    right: 20,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
+    bottom: 0,
+    right: width * 0.05,
+    paddingVertical: height * 0.015,
+    paddingHorizontal: width * 0.04,
     borderRadius: 6,
   },
 });

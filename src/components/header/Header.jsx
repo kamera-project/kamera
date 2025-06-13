@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { SafeAreaView, StyleSheet, TouchableOpacity } from "react-native";
 
 import FlashAutoIcon from "../../assets/svg/flash-auto.svg";
 import FlashOnIcon from "../../assets/svg/flash-on.svg";
@@ -19,7 +19,7 @@ export default function CameraHeader({ flash, onToggleFlash }) {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <TouchableOpacity onPress={onToggleFlash} style={styles.icon}>
         {flash === 'auto' && <FlashAutoIcon width={40} height={40} />}
         {flash === 'on' && <FlashOnIcon width={40} height={40} />}
@@ -28,7 +28,7 @@ export default function CameraHeader({ flash, onToggleFlash }) {
       <TouchableOpacity onPress={onToggleCamera} style={styles.icon}>
         <FlipCameraIcon width={46} height={46} />
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -39,7 +39,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
-
   },
   icon: {
     width: 48,
