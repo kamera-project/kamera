@@ -31,6 +31,7 @@ export default function CameraScreen() {
   const webViewRef = useRef(null);
   const [processedUri, setProcessedUri] = useState(null);
   const [transparentOverlay, setTransparentOverlay] = useState(null);
+  const [placedStickers, setPlacedStickers] = useState([]);
 
   // Bottom Sheet state 추가
   const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
@@ -51,7 +52,26 @@ export default function CameraScreen() {
   const backCamera = useCameraDevice('back');
   const frontCamera = useCameraDevice('front');
   const initialCameraMode = backCamera || frontCamera;
-
+  const stickerList = [
+    '😀',
+    '😎',
+    '🎉',
+    '❤️',
+    '⭐',
+    '🌈',
+    '🎨',
+    '🎭',
+    '🎪',
+    '🎯',
+    '🎲',
+    '🎸',
+    '🎤',
+    '🎧',
+    '🎮',
+    '🎬',
+    '🎺',
+    '🥳',
+  ];
   useEffect(() => {
     if (initialCameraMode) {
       setChosenDevice(initialCameraMode);
@@ -80,7 +100,7 @@ export default function CameraScreen() {
     console.log('sticker function');
     setIsBottomSheetVisible(true);
     Animated.timing(bottomSheetHeight, {
-      toValue: SCREEN_WIDTH * 0.8,
+      toValue: SCREEN_HEIGHT * 0.35,
       duration: 300,
       useNativeDriver: false,
     }).start();
@@ -98,15 +118,17 @@ export default function CameraScreen() {
 
   const handleStickerSelect = (sticker) => {
     console.log('Selected sticker:', sticker);
+    console.log(typeof sticker);
     // 여기에 스티커 선택 후 로직 추가
     closeBottomSheet();
+    setPlacedStickers([...placedStickers, sticker]);
   };
 
   const renderBottomSheet = () => (
     <Modal
       visible={isBottomSheetVisible}
       transparent={true}
-      onRequestClose={closeBottomSheet}
+      animationType='none'
     >
       <TouchableOpacity
         style={bottomSheetStyles.modalOverlay}
@@ -126,29 +148,10 @@ export default function CameraScreen() {
             <Text style={bottomSheetStyles.title}>스티커 선택</Text>
             <ScrollView
               style={bottomSheetStyles.scrollView}
-              showsVerticalScrollIndicator={true}
+              showsVerticalScrollIndicator={false}
             >
               <View style={bottomSheetStyles.stickerGrid}>
-                {[
-                  '😀',
-                  '😎',
-                  '🎉',
-                  '❤️',
-                  '⭐',
-                  '🌈',
-                  '🎨',
-                  '🎭',
-                  '🎪',
-                  '🎯',
-                  '🎲',
-                  '🎸',
-                  '🎤',
-                  '🎧',
-                  '🎮',
-                  '🎬',
-                  '🎺',
-                  '🥳',
-                ].map((sticker, index) => (
+                {stickerList.map((sticker, index) => (
                   <TouchableOpacity
                     key={index}
                     style={bottomSheetStyles.stickerItem}
@@ -253,7 +256,7 @@ export default function CameraScreen() {
           onStickerPress={openStickerSheet} // 스티커 버튼 핸들러 추가
         />
 
-        {/* Bottom Sheet 추가 */}
+        {/* Bottom Sheet 추가*/}
         {renderBottomSheet()}
       </View>
     );
@@ -295,6 +298,7 @@ export default function CameraScreen() {
     );
   };
 
+  // 기본
   return (
     <View style={styles.overallBackground}>
       <CameraHeader
@@ -310,6 +314,16 @@ export default function CameraScreen() {
         video={false}
         audio={false}
       />
+      {/* 선택한 스티커 랜더링 */}
+      {placedStickers.map((sticker, index) => (
+        <View
+          key={index}
+          style={styles.centerStickerContainer}
+        >
+          <Text style={styles.stickerText}>{sticker}</Text>
+        </View>
+      ))}
+
       <Footer
         onTakePhoto={onTakePhoto}
         thumbnailUri={thumbnailUri}
@@ -322,8 +336,7 @@ export default function CameraScreen() {
   );
 }
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#000' },
   camera: { flex: 1, width: SCREEN_WIDTH },
@@ -362,6 +375,16 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: '66%',
     right: 20,
+  },
+  centerStickerContainer: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -30 }, { translateY: -30 }],
+    zIndex: 10,
+  },
+  stickerText: {
+    fontSize: 60,
   },
 });
 
