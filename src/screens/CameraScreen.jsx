@@ -24,6 +24,7 @@ import { useCameraStore } from '../store/useCameraStore';
 import { handleTakePhoto } from '../utils/camera/takePhoto';
 import { transparentProcessorHTML } from '../utils/overlay/transparentProcessor';
 import CameraHeader from '../components/header/Header';
+import GalleryScreen from './GalleryScreen';
 
 export default function CameraScreen() {
   const [flash, setFlash] = useState('auto');
@@ -32,7 +33,7 @@ export default function CameraScreen() {
   const [processedUri, setProcessedUri] = useState(null);
   const [transparentOverlay, setTransparentOverlay] = useState(null);
   const [placedStickers, setPlacedStickers] = useState([]);
-
+  const [isGalleryVisible, setIsGalleryVisible] = useState(false);
   // Bottom Sheet state 추가
   const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
   const bottomSheetHeight = useRef(new Animated.Value(0)).current;
@@ -313,7 +314,7 @@ export default function CameraScreen() {
   );
 }
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   centerPosition: {
@@ -349,9 +350,9 @@ const styles = StyleSheet.create({
   resetButtonContainer: {
     position: 'absolute',
     bottom: 0,
-    right: width * 0.05,
-    paddingVertical: height * 0.015,
-    paddingHorizontal: width * 0.04,
+    right: SCREEN_WIDTH * 0.05,
+    paddingVertical: SCREEN_HEIGHT * 0.015,
+    paddingHorizontal: SCREEN_WIDTH * 0.04,
     borderRadius: 6,
   },
   centerStickerContainer: {
@@ -386,8 +387,8 @@ const bottomSheetStyles = StyleSheet.create({
     elevation: 5,
   },
   handle: {
-    width: 40,
-    height: 4,
+    SCREEN_WIDTH: 40,
+    SCREEN_HEIGHT: 4,
     backgroundColor: '#DDDDDD',
     borderRadius: 2,
     alignSelf: 'center',
