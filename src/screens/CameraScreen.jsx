@@ -1,4 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+// takephoto 에서 uri 를 받아온다
+// uri를 투명처리를 할 transparentProcessor.js (웹뷰) (투명, 굵기 처리)
+
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 
 import {
   View,
@@ -7,6 +10,11 @@ import {
   Button,
   Dimensions,
   Image,
+  TouchableOpacity,
+  ScrollView,
+  Modal,
+  Animated,
+  PanResponder,
 } from 'react-native';
 
 import { Camera, useCameraDevice } from 'react-native-vision-camera';
@@ -24,7 +32,11 @@ export default function CameraScreen() {
   const webViewRef = useRef(null);
   const [processedUri, setProcessedUri] = useState(null);
   const [transparentOverlay, setTransparentOverlay] = useState(null);
+  const [placedStickers, setPlacedStickers] = useState([]);
   const [isGalleryVisible, setIsGalleryVisible] = useState(false);
+  // Bottom Sheet state 추가
+  const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
+  const bottomSheetHeight = useRef(new Animated.Value(0)).current;
 
   const cameraPermission = useCameraStore((state) => state.cameraPermission);
   const setCameraPermission = useCameraStore(
@@ -41,7 +53,26 @@ export default function CameraScreen() {
   const backCamera = useCameraDevice('back');
   const frontCamera = useCameraDevice('front');
   const initialCameraMode = backCamera || frontCamera;
-
+  const stickerList = [
+    '😀',
+    '😎',
+    '🎉',
+    '❤️',
+    '⭐',
+    '🌈',
+    '🎨',
+    '🎭',
+    '🎪',
+    '🎯',
+    '🎲',
+    '🎸',
+    '🎤',
+    '🎧',
+    '🎮',
+    '🎬',
+    '🎺',
+    '🥳',
+  ];
   useEffect(() => {
     if (initialCameraMode) {
       setChosenDevice(initialCameraMode);
@@ -56,7 +87,6 @@ export default function CameraScreen() {
         camStatus = 'not-determined';
       }
       setCameraPermission(camStatus);
-      await getLatestPhoto();
     })();
   }, []);
 
@@ -66,6 +96,103 @@ export default function CameraScreen() {
     setCameraPermission(newCamStatus);
     setIsRequesting(false);
   }
+
+  const openStickerSheet = useCallback(() => {
+    console.log('sticker function');
+    setIsBottomSheetVisible(true);
+    Animated.timing(bottomSheetHeight, {
+      toValue: SCREEN_HEIGHT * 0.35,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  }, []);
+
+  const closeBottomSheet = () => {
+    Animated.timing(bottomSheetHeight, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: false,
+    }).start(() => {
+      setIsBottomSheetVisible(false);
+    });
+  };
+
+  const handleStickerSelect = (sticker) => {
+    console.log('Selected sticker:', sticker);
+    console.log(typeof sticker);
+    // 여기에 스티커 선택 후 로직 추가
+    closeBottomSheet();
+    setPlacedStickers([...placedStickers, sticker]);
+  };
+
+  const renderBottomSheet = () => (
+    <Modal
+      visible={isBottomSheetVisible}
+      transparent={true}
+      animationType='none'
+    >
+      <TouchableOpacity
+        style={bottomSheetStyles.modalOverlay}
+        activeOpacity={1}
+        onPress={closeBottomSheet}
+      >
+        <Animated.View
+          style={[
+            bottomSheetStyles.bottomSheet,
+            {
+              height: bottomSheetHeight,
+            },
+          ]}
+        >
+          <TouchableOpacity activeOpacity={1}>
+            <View style={bottomSheetStyles.handle} />
+            <Text style={bottomSheetStyles.title}>스티커 선택</Text>
+            <ScrollView
+              style={bottomSheetStyles.scrollView}
+              showsVerticalScrollIndicator={false}
+            >
+              <View style={bottomSheetStyles.stickerGrid}>
+                {stickerList.map((sticker, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={bottomSheetStyles.stickerItem}
+                    onPress={() => handleStickerSelect(sticker)}
+                  >
+                    <Text style={bottomSheetStyles.stickerText}>{sticker}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </ScrollView>
+          </TouchableOpacity>
+        </Animated.View>
+      </TouchableOpacity>
+    </Modal>
+  );
+
+  async function onTakePhoto() {
+    try {
+      const edgeBase64 = await handleTakePhoto(cameraRef, flash);
+
+      setProcessedUri(`data:image/png;base64,${edgeBase64}`);
+
+      setTimeout(() => {
+        if (webViewRef.current) {
+          webViewRef.current.postMessage(edgeBase64);
+        } else {
+        }
+      }, 100);
+    } catch (err) {}
+  }
+
+  const onWebViewMessage = (event) => {
+    const transparentImage = event.nativeEvent.data;
+    setTransparentOverlay(transparentImage);
+  };
+
+  const resetPhoto = () => {
+    setProcessedUri(null);
+    setTransparentOverlay(null);
+  };
 
   if (
     cameraPermission === null ||
@@ -86,33 +213,11 @@ export default function CameraScreen() {
     );
   }
 
-  async function onTakePhoto() {
-    try {
-      const edgeBase64 = await handleTakePhoto(cameraRef, flash);
-      setProcessedUri(`data:image/png;base64,${edgeBase64}`);
-
-      setTimeout(() => {
-        if (webViewRef.current) {
-          webViewRef.current.postMessage(edgeBase64);
-        } else {
-        }
-      }, 100);
-    } catch (err) { }
-  }
-
-  const onWebViewMessage = (event) => {
-    const transparentImage = event.nativeEvent.data;
-    setTransparentOverlay(transparentImage);
-  };
-
-  const resetPhoto = () => {
-    setProcessedUri(null);
-    setTransparentOverlay(null);
-  };
-
   const onToggleFlash = () => {
-    setFlash(prev => (prev === 'auto' ? 'on' : prev === 'on' ? 'off' : 'auto'));
-  }
+    setFlash((prev) =>
+      prev === 'auto' ? 'on' : prev === 'on' ? 'off' : 'auto',
+    );
+  };
 
   const openGallery = () => setIsGalleryVisible(true);
   const closeGallery = () => setIsGalleryVisible(false);
@@ -121,7 +226,10 @@ export default function CameraScreen() {
 
   return (
     <View style={styles.overallBackground}>
-      <CameraHeader flash={flash} onToggleFlash={onToggleFlash} />
+      <CameraHeader
+        flash={flash}
+        onToggleFlash={onToggleFlash}
+      />
       <View>
         <Camera
           ref={cameraRef}
@@ -132,6 +240,14 @@ export default function CameraScreen() {
           video={false}
           audio={false}
         />
+        {placedStickers.map((sticker, index) => (
+          <View
+            key={index}
+            style={styles.centerStickerContainer}
+          >
+            <Text style={styles.stickerText}>{sticker}</Text>
+          </View>
+        ))}
 
         {processedUri && !transparentOverlay && (
           <WebView
@@ -158,7 +274,7 @@ export default function CameraScreen() {
         {transparentOverlay && (
           <Image
             source={{ uri: transparentOverlay }}
-            resizeMode="cover"
+            resizeMode='cover'
             style={[
               styles.cameraPosition,
               {
@@ -175,18 +291,30 @@ export default function CameraScreen() {
 
         {transparentOverlay && (
           <View style={styles.resetButtonContainer}>
-            <Button title="RESET" color="#FFF" onPress={resetPhoto} />
+            <Button
+              title='RESET'
+              color='#FFF'
+              onPress={resetPhoto}
+            />
           </View>
         )}
       </View>
-      <Footer onTakePhoto={onTakePhoto} thumbnailUri={thumbnailUri} openGallery={openGallery} />
-      <GalleryScreen visible={isGalleryVisible} onClose={closeGallery} />
+      <Footer
+        onTakePhoto={onTakePhoto}
+        thumbnailUri={thumbnailUri}
+        openGallery={openGallery}
+        onStickerPress={openStickerSheet}
+      />
+      <GalleryScreen
+        visible={isGalleryVisible}
+        onClose={closeGallery}
+      />
+      {renderBottomSheet()}
     </View>
   );
 }
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const { width, height } = Dimensions.get('window');
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   centerPosition: {
@@ -222,9 +350,84 @@ const styles = StyleSheet.create({
   resetButtonContainer: {
     position: 'absolute',
     bottom: 0,
-    right: width * 0.05,
-    paddingVertical: height * 0.015,
-    paddingHorizontal: width * 0.04,
+    right: SCREEN_WIDTH * 0.05,
+    paddingVertical: SCREEN_HEIGHT * 0.015,
+    paddingHorizontal: SCREEN_WIDTH * 0.04,
     borderRadius: 6,
+  },
+  centerStickerContainer: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -30 }, { translateY: -30 }],
+    zIndex: 10,
+  },
+  stickerText: {
+    fontSize: 60,
+  },
+});
+const bottomSheetStyles = StyleSheet.create({
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    justifyContent: 'flex-end',
+  },
+  bottomSheet: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingTop: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  handle: {
+    SCREEN_WIDTH: 40,
+    SCREEN_HEIGHT: 4,
+    backgroundColor: '#DDDDDD',
+    borderRadius: 2,
+    alignSelf: 'center',
+    marginBottom: 10,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
+    paddingHorizontal: 20,
+  },
+  scrollView: {
+    paddingHorizontal: 20,
+  },
+  stickerGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    paddingBottom: 20,
+  },
+  stickerItem: {
+    width: '30%',
+    aspectRatio: 1,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 12,
+    marginBottom: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  stickerText: {
+    fontSize: 36,
   },
 });
