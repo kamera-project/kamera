@@ -212,135 +212,110 @@ export default function CameraScreen() {
     );
   }
 
-  if (transparentOverlay) {
-    return (
-      <View style={styles.overallBackground}>
-        {/* 카메라 프리뷰 */}
-        <Camera
-          ref={cameraRef}
-          device={chosenDevice}
-          isActive={true}
-          style={styles.cameraPosition}
-          photo={true}
-          video={false}
-          audio={false}
-        />
-
-        {/* 투명 오버레이 */}
-        <Image
-          source={{ uri: transparentOverlay }}
-          style={[
-            styles.cameraPosition,
-            {
-              position: 'absolute',
-              opacity: 0.6, // 투명도 조절
-              backgroundColor: 'transparent',
-            },
-          ]}
-          resizeMode='cover'
-          fadeDuration={0}
-        />
-
-        {/* 다시 촬영 버튼 대신 하단 goback 버튼 */}
-        <View style={styles.resetButtonContainer}>
-          <Button
-            title='RESET'
-            color='#FFF'
-            onPress={resetPhoto}
-          />
-        </View>
-
-        <Footer
-          onTakePhoto={onTakePhoto}
-          thumbnailUri={thumbnailUri}
-          onStickerPress={openStickerSheet} // 스티커 버튼 핸들러 추가
-        />
-
-        {/* Bottom Sheet 추가*/}
-        {renderBottomSheet()}
-      </View>
-    );
-  }
-
-  // 에지 검출 후 투명 처리 전
-  if (processedUri && !transparentOverlay) {
-    return (
-      <View style={styles.overallBackground}>
-        <Camera
-          ref={cameraRef}
-          device={chosenDevice}
-          isActive={true}
-          style={styles.cameraPosition}
-          photo={true}
-          video={false}
-          audio={false}
-        />
-
-        <WebView
-          ref={webViewRef}
-          source={{ html: transparentProcessorHTML }}
-          onMessage={onWebViewMessage}
-          style={{ width: 1, height: 1, position: 'absolute' }}
-          javaScriptEnabled={true}
-          onLoad={() => {
-            // WebView가 로드되면 바로 메시지 전송
-            const base64Only = processedUri.split(',')[1];
-            webViewRef.current.postMessage(base64Only);
-          }}
-        />
-        <Text style={styles.processingText}>오버레이 생성 중...</Text>
-      </View>
-    );
-  }
   const onToggleFlash = () => {
     setFlash((prev) =>
       prev === 'auto' ? 'on' : prev === 'on' ? 'off' : 'auto',
     );
   };
 
-  // 기본
+  const openGallery = () => setIsGalleryVisible(true);
+  const closeGallery = () => setIsGalleryVisible(false);
+
+  const isFront = chosenDevice.position === 'front';
+
   return (
     <View style={styles.overallBackground}>
       <CameraHeader
         flash={flash}
         onToggleFlash={onToggleFlash}
       />
-      <Camera
-        ref={cameraRef}
-        device={chosenDevice}
-        isActive={true}
-        style={styles.cameraPosition}
-        photo={true}
-        video={false}
-        audio={false}
-      />
-      {/* 선택한 스티커 랜더링 */}
-      {placedStickers.map((sticker, index) => (
-        <View
-          key={index}
-          style={styles.centerStickerContainer}
-        >
-          <Text style={styles.stickerText}>{sticker}</Text>
-        </View>
-      ))}
+      <View>
+        <Camera
+          ref={cameraRef}
+          device={chosenDevice}
+          isActive={true}
+          style={styles.cameraPosition}
+          photo={true}
+          video={false}
+          audio={false}
+        />
+        {placedStickers.map((sticker, index) => (
+          <View
+            key={index}
+            style={styles.centerStickerContainer}
+          >
+            <Text style={styles.stickerText}>{sticker}</Text>
+          </View>
+        ))}
 
+        {processedUri && !transparentOverlay && (
+          <WebView
+            ref={webViewRef}
+            source={{ html: transparentProcessorHTML }}
+            onMessage={onWebViewMessage}
+            style={{
+              width: 1,
+              height: 1,
+              position: 'absolute',
+            }}
+            javaScriptEnabled
+            onLoad={() => {
+              const base64Only = processedUri.split(',')[1];
+              webViewRef.current.postMessage(base64Only);
+            }}
+          />
+        )}
+
+        {processedUri && !transparentOverlay && (
+          <Text style={styles.processingText}>오버레이 생성 중...</Text>
+        )}
+
+        {transparentOverlay && (
+          <Image
+            source={{ uri: transparentOverlay }}
+            resizeMode='cover'
+            style={[
+              styles.cameraPosition,
+              {
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                opacity: 0.3,
+                backgroundColor: 'transparent',
+                transform: isFront ? [{ scaleX: -1 }] : undefined,
+              },
+            ]}
+          />
+        )}
+
+        {transparentOverlay && (
+          <View style={styles.resetButtonContainer}>
+            <Button
+              title='RESET'
+              color='#FFF'
+              onPress={resetPhoto}
+            />
+          </View>
+        )}
+      </View>
       <Footer
         onTakePhoto={onTakePhoto}
         thumbnailUri={thumbnailUri}
-        onStickerPress={openStickerSheet} // 스티커 버튼 핸들러 추가
+        openGallery={openGallery}
+        onStickerPress={openStickerSheet}
       />
-
-      {/* Bottom Sheet 추가 */}
+      <GalleryScreen
+        visible={isGalleryVisible}
+        onClose={closeGallery}
+      />
       {renderBottomSheet()}
     </View>
   );
 }
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000' },
-  camera: { flex: 1, width: SCREEN_WIDTH },
-  fullScreen: { flex: 1, width: SCREEN_WIDTH, backgroundColor: '#000' },
   centerPosition: {
     flex: 1,
     justifyContent: 'center',
@@ -373,8 +348,11 @@ const styles = StyleSheet.create({
   },
   resetButtonContainer: {
     position: 'absolute',
-    top: '66%',
-    right: 20,
+    bottom: 0,
+    right: width * 0.05,
+    paddingVertical: height * 0.015,
+    paddingHorizontal: width * 0.04,
+    borderRadius: 6,
   },
   centerStickerContainer: {
     position: 'absolute',
@@ -387,8 +365,6 @@ const styles = StyleSheet.create({
     fontSize: 60,
   },
 });
-
-// Bottom Sheet 스타일 추가
 const bottomSheetStyles = StyleSheet.create({
   modalOverlay: {
     flex: 1,

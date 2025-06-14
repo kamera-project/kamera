@@ -61,19 +61,17 @@ export default function Footer({
 
 const styles = StyleSheet.create({
   safeArea: {
-    flex: 2,
-    // position: 'absolute',
-    // bottom: 0,
-    // width: '100%',
-    // height: '15%',
-    // backgroundColor: '#fff',
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    paddingVertical: 12,
+    backgroundColor: 'white',
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-around',
     paddingVertical: 16,
-    position: 'relative',
   },
   icon: {
     width: 48,

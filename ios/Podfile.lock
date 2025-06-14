@@ -1282,6 +1282,8 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-splash-screen (3.3.0):
+    - React-Core
   - react-native-webview (13.15.0):
     - DoubleConversion
     - glog
@@ -1707,6 +1709,7 @@ DEPENDENCIES:
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
   - "react-native-cameraroll (from `../node_modules/@react-native-camera-roll/camera-roll`)"
   - react-native-fast-opencv (from `../node_modules/react-native-fast-opencv`)
+  - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -1827,6 +1830,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-camera-roll/camera-roll"
   react-native-fast-opencv:
     :path: "../node_modules/react-native-fast-opencv"
+  react-native-splash-screen:
+    :path: "../node_modules/react-native-splash-screen"
   react-native-webview:
     :path: "../node_modules/react-native-webview"
   React-NativeModulesApple:
@@ -1937,6 +1942,7 @@ SPEC CHECKSUMS:
   React-microtasksnativemodule: 11831d070aa47755bb5739069eb04ec621fec548
   react-native-cameraroll: cf8479c8b1d3a968e570c55d3d4e340ddbe17904
   react-native-fast-opencv: 77e7489bc99314295d8f2b351344b3ebd21855ae
+  react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
   react-native-webview: be9957759cb73cb64f2ed5359e32a85f1f5bdff8
   React-NativeModulesApple: 79a4404ac301b40bec3b367879c5e9a9ce81683c
   React-perflogger: 0ea25c109dba33d47dec36b2634bf7ea67c1a555
