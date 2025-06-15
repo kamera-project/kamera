@@ -20,7 +20,6 @@ import { handleTakePhoto } from '../utils/camera/takePhoto';
 import { transparentProcessorHTML } from '../utils/overlay/transparentProcessor';
 import CameraHeader from '../components/header/Header';
 import GalleryScreen from './GalleryScreen';
-import DraggableSticker from '../components/sticker/DraggableSticker';
 
 export default function CameraScreen() {
   const [flash, setFlash] = useState('auto');
@@ -231,19 +230,13 @@ export default function CameraScreen() {
           video={false}
           audio={false}
         />
-        {/* {placedStickers.map((sticker, index) => (
+        {placedStickers.map((sticker, index) => (
           <View
             key={index}
             style={styles.centerStickerContainer}
           >
             <Text style={styles.stickerText}>{sticker}</Text>
           </View>
-        ))} */}
-        {placedStickers.map((sticker, index) => (
-          <DraggableSticker
-            key={index}
-            emoji={sticker}
-          />
         ))}
         {processedUri && !transparentOverlay && (
           <WebView
