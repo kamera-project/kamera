@@ -1,8 +1,4 @@
-// takephoto 에서 uri 를 받아온다
-// uri를 투명처리를 할 transparentProcessor.js (웹뷰) (투명, 굵기 처리)
-
-import React, { useEffect, useRef, useState, useCallback } from 'react';
-
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -10,11 +6,10 @@ import {
   Button,
   Dimensions,
   Image,
+  Animated,
+  Modal,
   TouchableOpacity,
   ScrollView,
-  Modal,
-  Animated,
-  PanResponder,
 } from 'react-native';
 
 import { Camera, useCameraDevice } from 'react-native-vision-camera';
@@ -32,11 +27,8 @@ export default function CameraScreen() {
   const webViewRef = useRef(null);
   const [processedUri, setProcessedUri] = useState(null);
   const [transparentOverlay, setTransparentOverlay] = useState(null);
-  const [placedStickers, setPlacedStickers] = useState([]);
   const [isGalleryVisible, setIsGalleryVisible] = useState(false);
-  // Bottom Sheet state 추가
-  const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
-  const bottomSheetHeight = useRef(new Animated.Value(0)).current;
+  const [placedStickers, setPlacedStickers] = useState([]);
 
   const cameraPermission = useCameraStore((state) => state.cameraPermission);
   const setCameraPermission = useCameraStore(
@@ -52,6 +44,8 @@ export default function CameraScreen() {
 
   const backCamera = useCameraDevice('back');
   const frontCamera = useCameraDevice('front');
+  const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
+  const bottomSheetHeight = useRef(new Animated.Value(0)).current;
   const initialCameraMode = backCamera || frontCamera;
   const stickerList = [
     '😀',
@@ -73,6 +67,7 @@ export default function CameraScreen() {
     '🎺',
     '🥳',
   ];
+
   useEffect(() => {
     if (initialCameraMode) {
       setChosenDevice(initialCameraMode);
@@ -87,6 +82,7 @@ export default function CameraScreen() {
         camStatus = 'not-determined';
       }
       setCameraPermission(camStatus);
+      await getLatestPhoto();
     })();
   }, []);
 
@@ -96,16 +92,14 @@ export default function CameraScreen() {
     setCameraPermission(newCamStatus);
     setIsRequesting(false);
   }
-
-  const openStickerSheet = useCallback(() => {
-    console.log('sticker function');
+  const openStickerSheet = () => {
     setIsBottomSheetVisible(true);
     Animated.timing(bottomSheetHeight, {
       toValue: SCREEN_HEIGHT * 0.35,
       duration: 300,
       useNativeDriver: false,
     }).start();
-  }, []);
+  };
 
   const closeBottomSheet = () => {
     Animated.timing(bottomSheetHeight, {
@@ -118,13 +112,9 @@ export default function CameraScreen() {
   };
 
   const handleStickerSelect = (sticker) => {
-    console.log('Selected sticker:', sticker);
-    console.log(typeof sticker);
-    // 여기에 스티커 선택 후 로직 추가
     closeBottomSheet();
     setPlacedStickers([...placedStickers, sticker]);
   };
-
   const renderBottomSheet = () => (
     <Modal
       visible={isBottomSheetVisible}
@@ -169,31 +159,6 @@ export default function CameraScreen() {
     </Modal>
   );
 
-  async function onTakePhoto() {
-    try {
-      const edgeBase64 = await handleTakePhoto(cameraRef, flash);
-
-      setProcessedUri(`data:image/png;base64,${edgeBase64}`);
-
-      setTimeout(() => {
-        if (webViewRef.current) {
-          webViewRef.current.postMessage(edgeBase64);
-        } else {
-        }
-      }, 100);
-    } catch (err) {}
-  }
-
-  const onWebViewMessage = (event) => {
-    const transparentImage = event.nativeEvent.data;
-    setTransparentOverlay(transparentImage);
-  };
-
-  const resetPhoto = () => {
-    setProcessedUri(null);
-    setTransparentOverlay(null);
-  };
-
   if (
     cameraPermission === null ||
     cameraPermission === 'denied' ||
@@ -212,6 +177,31 @@ export default function CameraScreen() {
       </View>
     );
   }
+
+  async function onTakePhoto() {
+    try {
+      const edgeBase64 = await handleTakePhoto(cameraRef, flash);
+      setProcessedUri(`data:i234234242345mage/png;base64,${edgeBase64}`);
+
+      setTimeout(() => {
+        if (webViewRef.current) {
+          webViewRef.current.postMessage(edgeBase64);
+        } else {
+        }
+      }, 100);
+    } catch (err) {}
+  }
+
+  const onWebViewMessage = (event) => {
+    const transparentImage = event.nativeEvent.data;
+    setTransparentOverlay(transparentImage);
+  };
+
+  const resetPhoto = () => {
+    setProcessedUri(null);
+    setTransparentOverlay(null);
+    setPlacedStickers([]);
+  };
 
   const onToggleFlash = () => {
     setFlash((prev) =>
@@ -248,7 +238,6 @@ export default function CameraScreen() {
             <Text style={styles.stickerText}>{sticker}</Text>
           </View>
         ))}
-
         {processedUri && !transparentOverlay && (
           <WebView
             ref={webViewRef}
@@ -266,11 +255,9 @@ export default function CameraScreen() {
             }}
           />
         )}
-
         {processedUri && !transparentOverlay && (
           <Text style={styles.processingText}>오버레이 생성 중...</Text>
         )}
-
         {transparentOverlay && (
           <Image
             source={{ uri: transparentOverlay }}
@@ -288,7 +275,6 @@ export default function CameraScreen() {
             ]}
           />
         )}
-
         {transparentOverlay && (
           <View style={styles.resetButtonContainer}>
             <Button

@@ -1,12 +1,12 @@
-import React from 'react';
-import { SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
+import React from "react";
+import { SafeAreaView, StyleSheet, TouchableOpacity } from "react-native";
 
-import FlashAutoIcon from '../../assets/svg/flash-auto.svg';
-import FlashOnIcon from '../../assets/svg/flash-on.svg';
-import FlashOffIcon from '../../assets/svg/flash-off.svg';
-import FlipCameraIcon from '../../assets/svg/flip-camera.svg';
-import { useCameraDevice } from 'react-native-vision-camera';
-import { useCameraStore } from '../../store/useCameraStore';
+import FlashAutoIcon from "../../assets/svg/flash-auto.svg";
+import FlashOnIcon from "../../assets/svg/flash-on.svg";
+import FlashOffIcon from "../../assets/svg/flash-off.svg";
+import FlipCameraIcon from "../../assets/svg/flip-camera.svg";
+import { useCameraDevice } from "react-native-vision-camera";
+import { useCameraStore } from "../../store/useCameraStore";
 
 export default function CameraHeader({ flash, onToggleFlash }) {
   const backCamera = useCameraDevice('back');
@@ -15,44 +15,18 @@ export default function CameraHeader({ flash, onToggleFlash }) {
   const setChosenDevice = useCameraStore((state) => state.setChosenDevice);
 
   const onToggleCamera = () => {
-    setChosenDevice(
-      chosenDevice.position === 'back' ? frontCamera : backCamera,
-    );
-  };
+    setChosenDevice(chosenDevice.position === 'back' ? frontCamera : backCamera);
+  }
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity
-        onPress={onToggleFlash}
-        style={styles.icon}
-      >
-        {flash === 'auto' && (
-          <FlashAutoIcon
-            width={40}
-            height={40}
-          />
-        )}
-        {flash === 'on' && (
-          <FlashOnIcon
-            width={40}
-            height={40}
-          />
-        )}
-        {flash === 'off' && (
-          <FlashOffIcon
-            width={40}
-            height={40}
-          />
-        )}
+      <TouchableOpacity onPress={onToggleFlash} style={styles.icon}>
+        {flash === 'auto' && <FlashAutoIcon width={40} height={40} />}
+        {flash === 'on' && <FlashOnIcon width={40} height={40} />}
+        {flash === 'off' && <FlashOffIcon width={40} height={40} />}
       </TouchableOpacity>
-      <TouchableOpacity
-        onPress={onToggleCamera}
-        style={styles.icon}
-      >
-        <FlipCameraIcon
-          width={46}
-          height={46}
-        />
+      <TouchableOpacity onPress={onToggleCamera} style={styles.icon}>
+        <FlipCameraIcon width={46} height={46} />
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -60,9 +34,9 @@ export default function CameraHeader({ flash, onToggleFlash }) {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
   },

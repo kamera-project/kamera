@@ -8,7 +8,7 @@ export default function App() {
     setTimeout(() => {
       SplashScreen.hide();
     }, 1000);
-  }, []);
+  });
 
   return (
     <View style={styles.screen}>

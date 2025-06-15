@@ -10,11 +10,7 @@ import HomeBtn from './HomeButton';
 import Sticker from './Sticker';
 import Gallery from './Gallery';
 
-export default function Footer({
-  onTakePhoto,
-  thumbnailUri,
-  onStickerPress, // prop 이름을 onStickerPress로 통일
-}) {
+export default function Footer({ onTakePhoto, thumbnailUri, onStickerPress }) {
   function openGallery() {
     alert('gallery clicked!!');
   }
