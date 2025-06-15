@@ -11,11 +11,15 @@ export const handleTakePhoto = async (cameraRef, flash) => {
     height: 480, // 또는 360
   });
 
-  const uri = `file://${photo.path}`;
+  const uri = photo.path.startsWith('file://')
+    ? photo.path
+    : `file://${photo.path}`;
   useCameraStore.getState().setThumbnailUri(uri);
   await CameraRoll.saveAsset(`file://${photo.path}`, {
     type: 'photo',
   });
+
+  // return photo.path;
 
   const base64jpg = await RNFS.readFile(photo.path, 'base64');
   const srcMat = OpenCV.base64ToMat(base64jpg);
