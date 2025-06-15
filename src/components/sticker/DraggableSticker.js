@@ -5,12 +5,19 @@ import {
   PanResponder,
   StyleSheet,
   Text,
+  TouchableOpacity,
 } from 'react-native';
+import { useCameraStore } from '../../store/useCameraStore';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-export default function DraggableSticker({ index, emoji }) {
-  const pan = useRef(new Animated.ValueXY()).current;
 
+export default function DraggableSticker({ index, emoji, id }) {
+  const placedStickers = useCameraStore((state) => state.placedStickers);
+  const setPlacedStickers = useCameraStore((state) => state.setPlacedStickers);
+  const removeSticker = (id) => {
+    setPlacedStickers(placedStickers.filter((s) => s.id !== id));
+  };
+  const pan = useRef(new Animated.ValueXY()).current;
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
@@ -37,8 +44,14 @@ export default function DraggableSticker({ index, emoji }) {
       ]}
       {...panResponder.panHandlers}
     >
+      <TouchableOpacity
+        // style={styles.emojiDelete}
+        onPress={() => removeSticker(id)}
+      >
+        <Text style={styles.emojiDelete}>x</Text>
+      </TouchableOpacity>
+
       <Text style={styles.emojiText}>{emoji}</Text>
-      <Text stlye={styles.emojiDelete}>x</Text>
     </Animated.View>
   );
 }
@@ -58,6 +71,7 @@ const styles = StyleSheet.create({
   emojiDelete: {
     color: 'white',
     fontSize: 18,
+    left: 30,
     fontWeight: 'bold',
   },
 });

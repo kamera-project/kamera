@@ -29,12 +29,13 @@ export default function CameraScreen() {
   const [processedUri, setProcessedUri] = useState(null);
   const [transparentOverlay, setTransparentOverlay] = useState(null);
   const [isGalleryVisible, setIsGalleryVisible] = useState(false);
-  const [placedStickers, setPlacedStickers] = useState([]);
 
   const cameraPermission = useCameraStore((state) => state.cameraPermission);
   const setCameraPermission = useCameraStore(
     (state) => state.setCameraPermission,
   );
+  const placedStickers = useCameraStore((state) => state.placedStickers);
+  const setPlacedStickers = useCameraStore((state) => state.setPlacedStickers);
   const chosenDevice = useCameraStore((state) => state.chosenDevice);
   const setChosenDevice = useCameraStore((state) => state.setChosenDevice);
 
@@ -113,9 +114,14 @@ export default function CameraScreen() {
   };
 
   const handleStickerSelect = (sticker) => {
+    const newSticker = {
+      id: Date.now() + Math.random(),
+      emoji: sticker,
+    };
+    setPlacedStickers([...placedStickers, newSticker]);
     closeBottomSheet();
-    setPlacedStickers([...placedStickers, sticker]);
   };
+
   const renderBottomSheet = () => (
     <Modal
       visible={isBottomSheetVisible}
@@ -242,7 +248,8 @@ export default function CameraScreen() {
         {placedStickers.map((sticker, index) => (
           <DraggableSticker
             key={index}
-            emoji={sticker}
+            emoji={sticker.emoji}
+            id={sticker.id}
           />
         ))}
         {processedUri && !transparentOverlay && (
