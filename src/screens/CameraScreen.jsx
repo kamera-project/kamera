@@ -21,6 +21,7 @@ import { transparentProcessorHTML } from '../utils/overlay/transparentProcessor'
 import CameraHeader from '../components/header/Header';
 import GalleryScreen from './GalleryScreen';
 import DraggableSticker from '../components/sticker/DraggableSticker';
+import * as Svg from '../assets/svg';
 
 export default function CameraScreen() {
   const [flash, setFlash] = useState('auto');
@@ -50,6 +51,26 @@ export default function CameraScreen() {
   const bottomSheetHeight = useRef(new Animated.Value(0)).current;
   const initialCameraMode = backCamera || frontCamera;
   const stickerList = [
+    <Svg.Vector1
+      width={50}
+      height={50}
+    />,
+    <Svg.Vector2
+      width={50}
+      height={50}
+    />,
+    <Svg.Vector3
+      width={50}
+      height={50}
+    />,
+    <Svg.Vector4
+      width={50}
+      height={50}
+    />,
+    <Svg.Vector5
+      width={50}
+      height={50}
+    />,
     '😀',
     '😎',
     '🎉',
