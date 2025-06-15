@@ -36,7 +36,6 @@ export default function DraggableSticker({ index, emoji, id }) {
       style={[
         styles.sticker,
         {
-          // 화면 중앙에 초기 배치
           top: SCREEN_HEIGHT / 3 - styles.emojiText.fontSize / 2,
           left: SCREEN_WIDTH / 2 - styles.emojiText.fontSize / 2,
           transform: pan.getTranslateTransform(),
@@ -44,10 +43,7 @@ export default function DraggableSticker({ index, emoji, id }) {
       ]}
       {...panResponder.panHandlers}
     >
-      <TouchableOpacity
-        // style={styles.emojiDelete}
-        onPress={() => removeSticker(id)}
-      >
+      <TouchableOpacity onPress={() => removeSticker(id)}>
         <Text style={styles.emojiDelete}>x</Text>
       </TouchableOpacity>
 
@@ -60,7 +56,6 @@ const styles = StyleSheet.create({
   sticker: {
     position: 'absolute',
     zIndex: 10,
-    // 중앙 정렬을 위한 추가 스타일
     justifyContent: 'center',
     alignItems: 'center',
   },
