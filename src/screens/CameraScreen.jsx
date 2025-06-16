@@ -335,6 +335,12 @@ export default function CameraScreen() {
     } else {
       const requestResult = await requestGalleryPermissions();
       if (requestResult === 'granted' || requestResult === 'limited') setIsGalleryVisible(true);
+      else if (requestResult === 'denied' || requestResult === 'blocked') {
+        Alert.alert('사진 접근 권한이 필요합니다', '설정에서 허용해주세요', [
+          { text: '취소', style: 'cancel' },
+          { text: '설정 열기', onPress: openAppSettings },
+        ]);
+      }
     }
   };
   const closeGallery = () => setIsGalleryVisible(false);
