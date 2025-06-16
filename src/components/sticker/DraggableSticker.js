@@ -9,9 +9,10 @@ import {
 import useDraggableSticker from '../../hooks/useDraggableSticker';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const removeButtonSize = 50;
 
 export default function DraggableSticker({ emoji, id }) {
-  const { pan, panResponder, scale, removeSticker } = useDraggableSticker(id);
+  const { pan, panResponder, scale, removeSticker } = useDraggableSticker();
   const deleteButtonStyle = {
     position: 'absolute',
     top: scale.interpolate({
@@ -54,8 +55,8 @@ export default function DraggableSticker({ emoji, id }) {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    top: SCREEN_HEIGHT / 3 - 50,
-    left: SCREEN_WIDTH / 2 - 50,
+    top: SCREEN_HEIGHT / 3.5,
+    left: SCREEN_WIDTH / 2 - removeButtonSize / 2,
     zIndex: 10,
   },
   emojiText: {
