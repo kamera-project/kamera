@@ -16,17 +16,18 @@ import {
 
 import { Camera, useCameraDevice } from 'react-native-vision-camera';
 import { WebView } from 'react-native-webview';
-import Footer from '../components/footer/Footer';
+import CameraActionBar from '../components/CameraActionBar/CameraActionBar';
 import { useCameraStore } from '../store/useCameraStore';
 import { handleTakePhoto } from '../utils/camera/takePhoto';
 import { transparentProcessorHTML } from '../utils/overlay/transparentProcessor';
-import CameraHeader from '../components/header/Header';
+import CameraToolBar from '../components/CameraToolBar/CameraToolBar';
 import GalleryScreen from './GalleryScreen';
 import DraggableSticker from '../components/sticker/DraggableSticker';
 import * as Svg from '../assets/svg';
 import { usePhotoPermission } from '../hooks/usePermissions';
+import { binaryImageProcessor } from '../utils/overlay/binaryImageProcessor';
 
-export default function CameraScreen() {
+export default function CameraPreview() {
   const [flash, setFlash] = useState('auto');
   const cameraRef = useRef(null);
   const webViewRef = useRef(null);
@@ -265,10 +266,7 @@ export default function CameraScreen() {
     }
   }, [cameraPermission]);
 
-  if (
-    cameraPermission === null ||
-    cameraPermission === 'not-determined'
-  ) {
+  if (cameraPermission === null || cameraPermission === 'not-determined') {
     return (
       <View style={styles.centerPosition}>
         <Text style={styles.titleText}>카메라 · 마이크 권한이 필요합니다.</Text>
@@ -281,12 +279,15 @@ export default function CameraScreen() {
         />
       </View>
     );
-  } else if (cameraPermission === 'denied' || cameraPermission === 'restricted') {
+  } else if (
+    cameraPermission === 'denied' ||
+    cameraPermission === 'restricted'
+  ) {
     return (
       <View style={styles.centerPosition}>
         <Text style={styles.titleText}>설정에서 권한을 허용해주세요.</Text>
         <Button
-          title="설정 열기"
+          title='설정 열기'
           onPress={() => Linking.openURL('app-settings:')}
         />
       </View>
@@ -295,8 +296,10 @@ export default function CameraScreen() {
 
   async function onTakePhoto() {
     try {
-      const edgeBase64 = await handleTakePhoto(cameraRef, flash);
-      setProcessedUri(`data:i234234242345mage/png;base64,${edgeBase64}`);
+      const photoPath = await handleTakePhoto(cameraRef, flash);
+      const edgeBase64 = await binaryImageProcessor(photoPath);
+
+      setProcessedUri(`data:image/png;base64,${edgeBase64}`);
 
       setTimeout(() => {
         if (webViewRef.current) {
@@ -349,7 +352,7 @@ export default function CameraScreen() {
 
   return (
     <View style={styles.overallBackground}>
-      <CameraHeader
+      <CameraToolBar
         flash={flash}
         onToggleFlash={onToggleFlash}
       />
@@ -417,7 +420,7 @@ export default function CameraScreen() {
           </View>
         )}
       </View>
-      <Footer
+      <CameraActionBar
         onTakePhoto={onTakePhoto}
         thumbnailUri={thumbnailUri}
         openGallery={openGallery}
