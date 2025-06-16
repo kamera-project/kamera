@@ -12,6 +12,7 @@ import {
   ScrollView,
   Alert,
   Linking,
+  Switch,
 } from 'react-native';
 
 import { Camera, useCameraDevice } from 'react-native-vision-camera';
@@ -25,6 +26,7 @@ import GalleryScreen from './GalleryScreen';
 import DraggableSticker from '../components/sticker/DraggableSticker';
 import * as Svg from '../assets/svg';
 import { binaryImageProcessor } from '../utils/overlay/binaryImageProcessor';
+import OverlaySwitch from '../components/overlay/overlaySwitch';
 
 export default function CameraPreview() {
   const [flash, setFlash] = useState('auto');
@@ -33,6 +35,7 @@ export default function CameraPreview() {
   const [processedUri, setProcessedUri] = useState(null);
   const [transparentOverlay, setTransparentOverlay] = useState(null);
   const [isGalleryVisible, setIsGalleryVisible] = useState(false);
+  const [isFeatureOn, setIsFeatureOn] = useState(false);
 
   const cameraPermission = useCameraStore((state) => state.cameraPermission);
   const setCameraPermission = useCameraStore(
@@ -336,7 +339,9 @@ export default function CameraPreview() {
         flash={flash}
         onToggleFlash={onToggleFlash}
       />
+
       <View>
+        <OverlaySwitch />
         <Camera
           ref={cameraRef}
           device={chosenDevice}
@@ -426,6 +431,7 @@ const styles = StyleSheet.create({
   overallBackground: {
     flex: 1,
     backgroundColor: 'white',
+    position: 'relative',
   },
   cameraPosition: {
     width: SCREEN_WIDTH,
