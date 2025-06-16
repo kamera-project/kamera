@@ -24,6 +24,7 @@ import CameraToolBar from '../components/CameraToolBar/CameraToolBar';
 import GalleryScreen from './GalleryScreen';
 import DraggableSticker from '../components/sticker/DraggableSticker';
 import * as Svg from '../assets/svg';
+import { binaryImageProcessor } from '../utils/overlay/binaryImageProcessor';
 
 export default function CameraPreview() {
   const [flash, setFlash] = useState('auto');
@@ -293,8 +294,10 @@ export default function CameraPreview() {
 
   async function onTakePhoto() {
     try {
-      const edgeBase64 = await handleTakePhoto(cameraRef, flash);
-      setProcessedUri(`data:i234234242345mage/png;base64,${edgeBase64}`);
+      const photoPath = await handleTakePhoto(cameraRef, flash);
+      const edgeBase64 = await binaryImageProcessor(photoPath);
+
+      setProcessedUri(`data:image/png;base64,${edgeBase64}`);
 
       setTimeout(() => {
         if (webViewRef.current) {
