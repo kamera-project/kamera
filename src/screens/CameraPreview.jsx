@@ -24,6 +24,7 @@ import CameraToolBar from '../components/CameraToolBar/CameraToolBar';
 import GalleryScreen from './GalleryScreen';
 import DraggableSticker from '../components/sticker/DraggableSticker';
 import * as Svg from '../assets/svg';
+import { usePhotoPermission } from '../hooks/usePermissions';
 import { binaryImageProcessor } from '../utils/overlay/binaryImageProcessor';
 
 export default function CameraPreview() {
@@ -50,6 +51,7 @@ export default function CameraPreview() {
 
   const backCamera = useCameraDevice('back');
   const frontCamera = useCameraDevice('front');
+  const { photoPermissionStatus, requestGalleryPermissions, openAppSettings } = usePhotoPermission();
   const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
   const bottomSheetHeight = useRef(new Animated.Value(0)).current;
   const initialCameraMode = backCamera || frontCamera;
@@ -305,7 +307,7 @@ export default function CameraPreview() {
         } else {
         }
       }, 100);
-    } catch (err) {}
+    } catch (err) { }
   }
 
   const onWebViewMessage = (event) => {
@@ -325,7 +327,25 @@ export default function CameraPreview() {
     );
   };
 
-  const openGallery = () => setIsGalleryVisible(true);
+  const openGallery = async () => {
+    if (photoPermissionStatus === 'granted' || photoPermissionStatus === 'limited') {
+      setIsGalleryVisible(true);
+    } else if (photoPermissionStatus === 'denied' || photoPermissionStatus === 'blocked') {
+      Alert.alert('사진 접근 권한이 필요합니다', '설정에서 허용해주세요', [
+        { text: '취소', style: 'cancel' },
+        { text: '설정 열기', onPress: openAppSettings },
+      ]);
+    } else {
+      const requestResult = await requestGalleryPermissions();
+      if (requestResult === 'granted' || requestResult === 'limited') setIsGalleryVisible(true);
+      else if (requestResult === 'denied' || requestResult === 'blocked') {
+        Alert.alert('사진 접근 권한이 필요합니다', '설정에서 허용해주세요', [
+          { text: '취소', style: 'cancel' },
+          { text: '설정 열기', onPress: openAppSettings },
+        ]);
+      }
+    }
+  };
   const closeGallery = () => setIsGalleryVisible(false);
 
   const isFront = chosenDevice.position === 'front';
