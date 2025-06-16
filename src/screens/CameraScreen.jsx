@@ -195,7 +195,7 @@ export default function CameraScreen() {
         />
       </View>
     );
-  } else if (cameraPermission === 'denied') {
+  } else if (cameraPermission === 'denied' || cameraPermission === 'restricted') {
     return (
       <View style={styles.centerPosition}>
         <Text style={styles.titleText}>설정에서 권한을 허용해주세요.</Text>
