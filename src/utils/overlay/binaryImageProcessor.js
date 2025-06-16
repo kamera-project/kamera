@@ -12,7 +12,6 @@ export const binaryImageProcessor = async (photoPath) => {
   );
   OpenCV.invoke('rotate', srcMat, rotatedMat, 0);
   const dstMat = OpenCV.createObject(ObjectType.Mat, 0, 0, DataTypes.CV_8U);
-  // OpenCV.invoke('Canny', rotatedMat, dstMat, 80, 120);
   OpenCV.invoke('Canny', rotatedMat, dstMat, 120, 180);
 
   const result = OpenCV.toJSValue(dstMat);
