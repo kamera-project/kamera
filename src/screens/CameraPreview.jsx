@@ -25,7 +25,7 @@ import GalleryScreen from './GalleryScreen';
 import DraggableSticker from '../components/sticker/DraggableSticker';
 import * as Svg from '../assets/svg';
 
-export default function CameraScreen() {
+export default function CameraPreview() {
   const [flash, setFlash] = useState('auto');
   const cameraRef = useRef(null);
   const webViewRef = useRef(null);
