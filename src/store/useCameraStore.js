@@ -7,6 +7,7 @@ export const useCameraStore = create((set) => ({
   isRequesting: false,
   thumbnailUri: null,
   placedStickers: [],
+  isFeatureOn: false,
 
   setCameraRef: (ref) => set({ cameraRef: ref }),
   setCameraPermission: (status) => set({ cameraPermission: status }),
@@ -14,6 +15,7 @@ export const useCameraStore = create((set) => ({
   setIsRequesting: (request) => set({ isRequesting: request }),
   setThumbnailUri: (uri) => set({ thumbnailUri: uri }),
   setPlacedStickers: (sticker) => set({ placedStickers: sticker }),
+  setIsFeatureOn: (feature) => set({ isFeatureOn: feature }),
   getLatestPhoto: async () => {
     try {
       const photos = await CameraRoll.getPhotos({

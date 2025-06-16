@@ -2,6 +2,8 @@ import { CameraRoll } from '@react-native-camera-roll/camera-roll';
 import { useCameraStore } from '../../store/useCameraStore';
 
 export const handleTakePhoto = async (cameraRef, flash) => {
+  const { isFeatureOn } = useCameraStore.getState();
+
   const photo = await cameraRef.current.takePhoto({
     flash,
     qualityPrioritization: 'speed',
@@ -14,6 +16,7 @@ export const handleTakePhoto = async (cameraRef, flash) => {
   await CameraRoll.saveAsset(`file://${photo.path}`, {
     type: 'photo',
   });
-
-  return photo.path;
+  if (isFeatureOn) {
+    return photo.path;
+  }
 };

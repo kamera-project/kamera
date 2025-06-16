@@ -35,7 +35,6 @@ export default function CameraPreview() {
   const [processedUri, setProcessedUri] = useState(null);
   const [transparentOverlay, setTransparentOverlay] = useState(null);
   const [isGalleryVisible, setIsGalleryVisible] = useState(false);
-  const [isFeatureOn, setIsFeatureOn] = useState(false);
 
   const cameraPermission = useCameraStore((state) => state.cameraPermission);
   const setCameraPermission = useCameraStore(
