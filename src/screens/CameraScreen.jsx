@@ -237,14 +237,6 @@ export default function CameraScreen() {
           video={false}
           audio={false}
         />
-        {/* {placedStickers.map((sticker, index) => (
-          <View
-            key={index}
-            style={styles.centerStickerContainer}
-          >
-            <Text style={styles.stickerText}>{sticker}</Text>
-          </View>
-        ))} */}
         {placedStickers.map((sticker, index) => (
           <DraggableSticker
             key={index}
