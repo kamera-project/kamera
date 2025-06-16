@@ -24,6 +24,7 @@ import CameraHeader from '../components/header/Header';
 import GalleryScreen from './GalleryScreen';
 import DraggableSticker from '../components/sticker/DraggableSticker';
 import * as Svg from '../assets/svg';
+import { usePhotoPermission } from '../hooks/usePermissions';
 
 export default function CameraScreen() {
   const [flash, setFlash] = useState('auto');
@@ -49,6 +50,7 @@ export default function CameraScreen() {
 
   const backCamera = useCameraDevice('back');
   const frontCamera = useCameraDevice('front');
+  const { status, ask, goToSettings } = usePhotoPermission();
   const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
   const bottomSheetHeight = useRef(new Animated.Value(0)).current;
   const initialCameraMode = backCamera || frontCamera;
@@ -264,7 +266,7 @@ export default function CameraScreen() {
   }, [cameraPermission]);
 
   if (
-    cameraPermission === undefined ||
+    cameraPermission === null ||
     cameraPermission === 'not-determined'
   ) {
     return (
@@ -322,7 +324,19 @@ export default function CameraScreen() {
     );
   };
 
-  const openGallery = () => setIsGalleryVisible(true);
+  const openGallery = async () => {
+    if (status === 'granted' || status === 'limited') {
+      setIsGalleryVisible(true);
+    } else if (status === 'denied' || status === 'blocked') {
+      Alert.alert('사진 접근 권한이 필요합니다', '설정에서 허용해주세요', [
+        { text: '취소', style: 'cancel' },
+        { text: '설정 열기', onPress: goToSettings },
+      ]);
+    } else {
+      const s = await ask();
+      if (s === 'granted' || s === 'limited') setIsGalleryVisible(true);
+    }
+  };
   const closeGallery = () => setIsGalleryVisible(false);
 
   const isFront = chosenDevice.position === 'front';
