@@ -10,6 +10,8 @@ import {
   Modal,
   TouchableOpacity,
   ScrollView,
+  Alert,
+  Linking,
 } from 'react-native';
 
 import { Camera, useCameraDevice } from 'react-native-vision-camera';
@@ -159,9 +161,26 @@ export default function CameraScreen() {
     </Modal>
   );
 
+  useEffect(() => {
+    if (cameraPermission === 'denied') {
+      Alert.alert(
+        '권한이 필요합니다',
+        '카메라/마이크 권한이 꺼져 있어 기능을 사용할 수 없습니다. 설정에서 권한을 허용해주세요.',
+        [
+          { text: '취소', style: 'cancel' },
+          {
+            text: '설정으로 이동',
+            onPress: () => {
+              Linking.openURL('app-settings:');
+            },
+          },
+        ],
+      );
+    }
+  }, [cameraPermission]);
+
   if (
     cameraPermission === null ||
-    cameraPermission === 'denied' ||
     cameraPermission === 'not-determined'
   ) {
     return (
@@ -173,6 +192,16 @@ export default function CameraScreen() {
           }
           onPress={requestPermissions}
           disabled={isRequesting}
+        />
+      </View>
+    );
+  } else if (cameraPermission === 'denied') {
+    return (
+      <View style={styles.centerPosition}>
+        <Text style={styles.titleText}>설정에서 권한을 허용해주세요.</Text>
+        <Button
+          title="설정 열기"
+          onPress={() => Linking.openURL('app-settings:')}
         />
       </View>
     );
@@ -189,7 +218,7 @@ export default function CameraScreen() {
         } else {
         }
       }, 100);
-    } catch (err) {}
+    } catch (err) { }
   }
 
   const onWebViewMessage = (event) => {
