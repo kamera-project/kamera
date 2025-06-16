@@ -21,6 +21,7 @@ import { transparentProcessorHTML } from '../utils/overlay/transparentProcessor'
 import CameraHeader from '../components/header/Header';
 import GalleryScreen from './GalleryScreen';
 import DraggableSticker from '../components/sticker/DraggableSticker';
+import * as Svg from '../assets/svg';
 
 export default function CameraScreen() {
   const [flash, setFlash] = useState('auto');
@@ -50,6 +51,82 @@ export default function CameraScreen() {
   const bottomSheetHeight = useRef(new Animated.Value(0)).current;
   const initialCameraMode = backCamera || frontCamera;
   const stickerList = [
+    <Svg.Vector1
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector2
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector3
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector4
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector5
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector6
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector7
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector8
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector9
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector10
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector11
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector12
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector13
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector14
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector15
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector16
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector17
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector18
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector19
+      width={70}
+      height={50}
+    />,
     '😀',
     '😎',
     '🎉',
@@ -97,7 +174,7 @@ export default function CameraScreen() {
   const openStickerSheet = () => {
     setIsBottomSheetVisible(true);
     Animated.timing(bottomSheetHeight, {
-      toValue: SCREEN_HEIGHT * 0.35,
+      toValue: SCREEN_HEIGHT * 0.4,
       duration: 300,
       useNativeDriver: false,
     }).start();

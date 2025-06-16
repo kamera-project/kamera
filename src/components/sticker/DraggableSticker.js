@@ -1,72 +1,71 @@
-import { useRef } from 'react';
+import React from 'react';
 import {
+  Text,
+  StyleSheet,
   Animated,
   Dimensions,
-  PanResponder,
-  StyleSheet,
-  Text,
   TouchableOpacity,
 } from 'react-native';
-import { useCameraStore } from '../../store/useCameraStore';
+import useDraggableSticker from '../../hooks/useDraggableSticker';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const removeButtonSize = 50;
 
-export default function DraggableSticker({ index, emoji, id }) {
-  const placedStickers = useCameraStore((state) => state.placedStickers);
-  const setPlacedStickers = useCameraStore((state) => state.setPlacedStickers);
-  const removeSticker = (id) => {
-    setPlacedStickers(placedStickers.filter((s) => s.id !== id));
-  };
-  const pan = useRef(new Animated.ValueXY()).current;
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], {
-        useNativeDriver: false,
-      }),
-
-      onPanResponderRelease: () => {
-        pan.extractOffset();
-      },
+export default function DraggableSticker({ emoji, id }) {
+  const { pan, panResponder, scale, removeSticker } = useDraggableSticker();
+  const deleteButtonStyle = {
+    position: 'absolute',
+    top: scale.interpolate({
+      inputRange: [0.5, 1, 5],
+      outputRange: [5, -5, -105],
     }),
-  ).current;
-
+    right: scale.interpolate({
+      inputRange: [0.5, 1, 5],
+      outputRange: [5, -5, -105],
+    }),
+    width: 25,
+    height: 25,
+    borderRadius: 12.5,
+    backgroundColor: 'rgba(255, 0, 0, 0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  };
   return (
     <Animated.View
+      {...panResponder.panHandlers}
       style={[
-        styles.sticker,
+        styles.container,
         {
-          top: SCREEN_HEIGHT / 3 - styles.emojiText.fontSize / 2,
-          left: SCREEN_WIDTH / 2 - styles.emojiText.fontSize / 2,
           transform: pan.getTranslateTransform(),
         },
       ]}
-      {...panResponder.panHandlers}
     >
-      <TouchableOpacity onPress={() => removeSticker(id)}>
-        <Text style={styles.emojiDelete}>x</Text>
-      </TouchableOpacity>
-
-      <Text style={styles.emojiText}>{emoji}</Text>
+      <Animated.View style={{ transform: [{ scale }] }}>
+        <Text style={styles.emojiText}>{emoji}</Text>
+      </Animated.View>
+      <Animated.View style={deleteButtonStyle}>
+        <TouchableOpacity onPress={() => removeSticker(id)}>
+          <Text style={styles.removeButtonText}>×</Text>
+        </TouchableOpacity>
+      </Animated.View>
     </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
-  sticker: {
+  container: {
     position: 'absolute',
+    top: SCREEN_HEIGHT / 3.5,
+    left: SCREEN_WIDTH / 2 - removeButtonSize / 2,
     zIndex: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   emojiText: {
-    fontSize: 48,
-    textAlign: 'center',
+    fontSize: 100,
   },
-  emojiDelete: {
+  removeButtonText: {
     color: 'white',
     fontSize: 18,
-    left: 30,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
