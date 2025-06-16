@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, StyleSheet, SafeAreaView } from 'react-native';
-import CameraScreen from './src/screens/CameraScreen';
+import CameraPreview from './src/screens/CameraPreview';
 import SplashScreen from 'react-native-splash-screen';
 
 export default function App() {
@@ -13,7 +13,7 @@ export default function App() {
   return (
     <View style={styles.screen}>
       <SafeAreaView style={styles.main}>
-        <CameraScreen />
+        <CameraPreview />
       </SafeAreaView>
     </View>
   );

@@ -10,7 +10,7 @@ import HomeBtn from './HomeButton';
 import Sticker from './Sticker';
 import Gallery from './Gallery';
 
-export default function Footer({
+export default function CameraActionBar({
   onTakePhoto,
   thumbnailUri,
   openGallery,
