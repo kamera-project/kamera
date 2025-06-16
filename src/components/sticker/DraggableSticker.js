@@ -6,7 +6,6 @@ import {
   PanResponder,
   Dimensions,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import { useCameraStore } from '../../store/useCameraStore';
 
@@ -15,24 +14,22 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 export default function DraggableSticker({ emoji, id }) {
   const pan = useRef(new Animated.ValueXY()).current;
   const scale = useRef(new Animated.Value(1)).current;
-
-  // 핀치 제스처를 위한 변수들
   const placedStickers = useCameraStore((state) => state.placedStickers);
   const setPlacedStickers = useCameraStore((state) => state.setPlacedStickers);
   const removeSticker = (id) => {
-    setPlacedStickers(placedStickers.filter((s) => s.id !== id));
+    setPlacedStickers(placedStickers.filter((sticker) => sticker.id !== id));
   };
   const lastDistance = useRef(null);
-  const currentScale = useRef(1); // 현재 스케일 값 저장
+  const currentScale = useRef(1);
   const deleteButtonStyle = {
     position: 'absolute',
     top: scale.interpolate({
       inputRange: [0.5, 1, 5],
-      outputRange: [5, -5, -105], // 훨씬 더 가깝게
+      outputRange: [5, -5, -105],
     }),
     right: scale.interpolate({
       inputRange: [0.5, 1, 5],
-      outputRange: [5, -5, -105], // 훨씬 더 가깝게
+      outputRange: [5, -5, -105],
     }),
     width: 25,
     height: 25,
@@ -48,18 +45,12 @@ export default function DraggableSticker({ emoji, id }) {
 
       onPanResponderMove: (evt, gestureState) => {
         const touches = evt.nativeEvent.touches;
-
-        // 한 손가락: 이동
         if (touches.length === 1) {
-          // Animated.event 대신 수동으로 설정
           pan.setValue({
             x: gestureState.dx,
             y: gestureState.dy,
           });
-        }
-
-        // 두 손가락: 크기 조절
-        else if (touches.length === 2) {
+        } else if (touches.length === 2) {
           const [touch1, touch2] = touches;
 
           const dx = touch1.pageX - touch2.pageX;

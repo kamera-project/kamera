@@ -52,23 +52,79 @@ export default function CameraScreen() {
   const initialCameraMode = backCamera || frontCamera;
   const stickerList = [
     <Svg.Vector1
-      width={50}
+      width={70}
       height={50}
     />,
     <Svg.Vector2
-      width={50}
+      width={70}
       height={50}
     />,
     <Svg.Vector3
-      width={50}
+      width={70}
       height={50}
     />,
     <Svg.Vector4
-      width={50}
+      width={70}
       height={50}
     />,
     <Svg.Vector5
-      width={50}
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector6
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector7
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector8
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector9
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector10
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector11
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector12
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector13
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector14
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector15
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector16
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector17
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector18
+      width={70}
+      height={50}
+    />,
+    <Svg.Vector19
+      width={70}
       height={50}
     />,
     '😀',
@@ -118,7 +174,7 @@ export default function CameraScreen() {
   const openStickerSheet = () => {
     setIsBottomSheetVisible(true);
     Animated.timing(bottomSheetHeight, {
-      toValue: SCREEN_HEIGHT * 0.35,
+      toValue: SCREEN_HEIGHT * 0.4,
       duration: 300,
       useNativeDriver: false,
     }).start();
@@ -258,14 +314,6 @@ export default function CameraScreen() {
           video={false}
           audio={false}
         />
-        {/* {placedStickers.map((sticker, index) => (
-          <View
-            key={index}
-            style={styles.centerStickerContainer}
-          >
-            <Text style={styles.stickerText}>{sticker}</Text>
-          </View>
-        ))} */}
         {placedStickers.map((sticker, index) => (
           <DraggableSticker
             key={index}
