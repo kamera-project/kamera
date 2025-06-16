@@ -180,7 +180,7 @@ export default function CameraScreen() {
   }, [cameraPermission]);
 
   if (
-    cameraPermission === null ||
+    cameraPermission === undefined ||
     cameraPermission === 'not-determined'
   ) {
     return (
