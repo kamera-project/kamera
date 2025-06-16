@@ -1,21 +1,16 @@
 import { useState, useCallback } from 'react';
-import {
-  check,
-  request,
-  openSettings,
-  PERMISSIONS,
-} from 'react-native-permissions';
+import { request, openSettings, PERMISSIONS } from 'react-native-permissions';
 
 export function usePhotoPermission() {
-  const [status, setStatus] = useState(null);
+  const [photoPermissionStatus, setPhotoPermissionStatus] = useState(null);
 
-  const ask = useCallback(async () => {
+  const requestGalleryPermissions = useCallback(async () => {
     const state = await request(PERMISSIONS.IOS.PHOTO_LIBRARY);
-    setStatus(state);
+    setPhotoPermissionStatus(state);
     return state;
   }, []);
 
-  const goToSettings = () => openSettings();
+  const openAppSettings = () => openSettings();
 
-  return { status, ask, goToSettings };
+  return { photoPermissionStatus, requestGalleryPermissions, openAppSettings };
 }

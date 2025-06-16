@@ -50,7 +50,7 @@ export default function CameraScreen() {
 
   const backCamera = useCameraDevice('back');
   const frontCamera = useCameraDevice('front');
-  const { status, ask, goToSettings } = usePhotoPermission();
+  const { photoPermissionStatus, requestGalleryPermissions, openAppSettings } = usePhotoPermission();
   const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
   const bottomSheetHeight = useRef(new Animated.Value(0)).current;
   const initialCameraMode = backCamera || frontCamera;
@@ -325,16 +325,16 @@ export default function CameraScreen() {
   };
 
   const openGallery = async () => {
-    if (status === 'granted' || status === 'limited') {
+    if (photoPermissionStatus === 'granted' || photoPermissionStatus === 'limited') {
       setIsGalleryVisible(true);
-    } else if (status === 'denied' || status === 'blocked') {
+    } else if (photoPermissionStatus === 'denied' || photoPermissionStatus === 'blocked') {
       Alert.alert('사진 접근 권한이 필요합니다', '설정에서 허용해주세요', [
         { text: '취소', style: 'cancel' },
-        { text: '설정 열기', onPress: goToSettings },
+        { text: '설정 열기', onPress: openAppSettings },
       ]);
     } else {
-      const s = await ask();
-      if (s === 'granted' || s === 'limited') setIsGalleryVisible(true);
+      const requestResult = await requestGalleryPermissions();
+      if (requestResult === 'granted' || requestResult === 'limited') setIsGalleryVisible(true);
     }
   };
   const closeGallery = () => setIsGalleryVisible(false);
