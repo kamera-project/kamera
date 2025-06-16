@@ -9,12 +9,6 @@ import {
 export function usePhotoPermission() {
   const [status, setStatus] = useState(null);
 
-  const refresh = useCallback(async () => {
-    const state = await check(PERMISSIONS.IOS.PHOTO_LIBRARY);
-    setStatus(state);
-    return state;
-  }, []);
-
   const ask = useCallback(async () => {
     const state = await request(PERMISSIONS.IOS.PHOTO_LIBRARY);
     setStatus(state);
@@ -23,5 +17,5 @@ export function usePhotoPermission() {
 
   const goToSettings = () => openSettings();
 
-  return { status, refresh, ask, goToSettings };
+  return { status, ask, goToSettings };
 }
