@@ -2,9 +2,9 @@ import { CameraRoll } from "@react-native-camera-roll/camera-roll";
 import { useEffect, useState } from "react";
 import { Alert, Dimensions, FlatList, Modal, SafeAreaView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Image, Text } from "react-native";
-import MoveToCamera from "../components/GalleryFooter/MoveToCamera";
-import BackBtn from "../components/GalleryFooter/BackBtn";
-import DeletePhoto from "../components/GalleryFooter/DeletePhoto";
+import MoveToCamera from "../assets/svg/x.svg";
+import BackBtn from "../assets/svg/back.svg";
+import DeletePhoto from "../assets/svg/trash.svg";
 
 const numColumns = 3;
 const imageSize = Dimensions.get('window').width / numColumns;
