@@ -9,13 +9,14 @@ import {
 import HomeBtn from './HomeButton';
 import Sticker from './Sticker';
 import Gallery from './Gallery';
+import { useCameraStore } from '../../store/useCameraStore';
 
 export default function CameraActionBar({
   onTakePhoto,
-  thumbnailUri,
   openGallery,
   onStickerPress,
 }) {
+  const thumbnailUri = useCameraStore((state) => state.thumbnailUri);
   function openStickerBook() {
     onStickerPress();
   }
