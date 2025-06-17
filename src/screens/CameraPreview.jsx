@@ -48,7 +48,6 @@ export default function CameraPreview() {
 
   const isRequesting = useCameraStore((state) => state.isRequesting);
   const setIsRequesting = useCameraStore((state) => state.setIsRequesting);
-  const thumbnailUri = useCameraStore((state) => state.thumbnailUri);
   const setThumbnailUri = useCameraStore((state) => state.setThumbnailUri);
   const getLatestPhoto = useCameraStore((state) => state.getLatestPhoto);
 
@@ -425,7 +424,6 @@ export default function CameraPreview() {
       </View>
       <CameraActionBar
         onTakePhoto={onTakePhoto}
-        thumbnailUri={thumbnailUri}
         openGallery={openGallery}
         onStickerPress={openStickerSheet}
       />
