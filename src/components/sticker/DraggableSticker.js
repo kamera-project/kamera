@@ -7,12 +7,14 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import useDraggableSticker from '../../hooks/useDraggableSticker';
+import { useStickerStore } from '../../store/useStickerStore';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const removeButtonSize = 50;
 
 export default function DraggableSticker({ emoji, id }) {
   const { pan, panResponder, scale, removeSticker } = useDraggableSticker();
+  const opacity = useStickerStore((state) => state.opacity);
   const deleteButtonStyle = {
     position: 'absolute',
     top: scale.interpolate({
@@ -23,10 +25,11 @@ export default function DraggableSticker({ emoji, id }) {
       inputRange: [0.5, 1, 5],
       outputRange: [5, -5, -105],
     }),
-    width: 25,
-    height: 25,
-    borderRadius: 12.5,
-    backgroundColor: 'rgba(255, 0, 0, 0.8)',
+    width: 35,
+    height: 35,
+    borderRadius: 17.5,
+    backgroundColor: 'rgba(102, 101, 101, 0.7)',
+    opacity,
     justifyContent: 'center',
     alignItems: 'center',
   };
@@ -40,7 +43,7 @@ export default function DraggableSticker({ emoji, id }) {
         },
       ]}
     >
-      <Animated.View style={{ transform: [{ scale }] }}>
+      <Animated.View style={{ transform: [{ scale }], opacity }}>
         <Text style={styles.emojiText}>{emoji}</Text>
       </Animated.View>
       <Animated.View style={deleteButtonStyle}>
@@ -64,7 +67,7 @@ const styles = StyleSheet.create({
   },
   removeButtonText: {
     color: 'white',
-    fontSize: 18,
+    fontSize: 25,
     fontWeight: 'bold',
     textAlign: 'center',
   },

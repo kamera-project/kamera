@@ -28,6 +28,7 @@ import * as Svg from '../assets/svg';
 import { usePhotoPermission } from '../hooks/usePermissions';
 import { binaryImageProcessor } from '../utils/overlay/binaryImageProcessor';
 import OverlaySwitch from '../components/overlay/overlaySwitch';
+import CustomOpacitySlider from '../components/sticker/OpacitySlider';
 
 export default function CameraPreview() {
   const [flash, setFlash] = useState('auto');
@@ -58,6 +59,107 @@ export default function CameraPreview() {
   const bottomSheetHeight = useRef(new Animated.Value(0)).current;
   const initialCameraMode = backCamera || frontCamera;
   const stickerList = [
+    // {
+    //   type: 'image',
+    //   source: require('../assets/images/hs_thumb.png'),
+    //   originalSource: require('../assets/images/hs_original.png'), // 고화질
+    // },
+    // ,
+    <Image
+      source={require('../assets/images/m1.png')}
+      style={{ width: 100, height: 100 }}
+      resizeMode='contain'
+    />,
+    <Image
+      source={require('../assets/images/m2.png')}
+      style={{ width: 100, height: 100 }}
+      resizeMode='contain'
+    />,
+    <Image
+      source={require('../assets/images/m3.png')}
+      style={{ width: 100, height: 100 }}
+      resizeMode='contain'
+    />,
+    <Image
+      source={require('../assets/images/m4.png')}
+      style={{ width: 100, height: 100 }}
+      resizeMode='contain'
+    />,
+    <Image
+      source={require('../assets/images/m5.png')}
+      style={{ width: 100, height: 100 }}
+      resizeMode='contain'
+    />,
+    <Image
+      source={require('../assets/images/m6.png')}
+      style={{ width: 100, height: 100 }}
+      resizeMode='contain'
+    />,
+    <Image
+      source={require('../assets/images/m7.png')}
+      style={{ width: 100, height: 100 }}
+      resizeMode='contain'
+    />,
+    <Image
+      source={require('../assets/images/m8.png')}
+      style={{ width: 100, height: 100 }}
+      resizeMode='contain'
+    />,
+    <Image
+      source={require('../assets/images/m9.png')}
+      style={{ width: 100, height: 100 }}
+      resizeMode='contain'
+    />,
+    <Image
+      source={require('../assets/images/m9.png')}
+      style={{ width: 100, height: 100 }}
+      resizeMode='contain'
+    />,
+    <Image
+      source={require('../assets/images/m10.png')}
+      style={{ width: 100, height: 100 }}
+      resizeMode='contain'
+    />,
+    <Image
+      source={require('../assets/images/m11.png')}
+      style={{ width: 100, height: 100 }}
+      resizeMode='contain'
+    />,
+    <Image
+      source={require('../assets/images/m12.png')}
+      style={{ width: 100, height: 100 }}
+      resizeMode='contain'
+    />,
+    <Image
+      source={require('../assets/images/m13.png')}
+      style={{ width: 100, height: 100 }}
+      resizeMode='contain'
+    />,
+    <Image
+      source={require('../assets/images/m14.png')}
+      style={{ width: 100, height: 100 }}
+      resizeMode='contain'
+    />,
+    <Image
+      source={require('../assets/images/m15.png')}
+      style={{ width: 100, height: 100 }}
+      resizeMode='contain'
+    />,
+    <Image
+      source={require('../assets/images/m16.png')}
+      style={{ width: 100, height: 100 }}
+      resizeMode='contain'
+    />,
+    <Image
+      source={require('../assets/images/m17.png')}
+      style={{ width: 100, height: 100 }}
+      resizeMode='contain'
+    />,
+    <Image
+      source={require('../assets/images/m18.png')}
+      style={{ width: 100, height: 100 }}
+      resizeMode='contain'
+    />,
     <Svg.Vector1
       width={70}
       height={50}
@@ -183,6 +285,9 @@ export default function CameraPreview() {
     const newSticker = {
       id: Date.now() + Math.random(),
       emoji: sticker,
+      source: sticker,
+      width: 200,
+      height: 200,
     };
     setPlacedStickers([...placedStickers, newSticker]);
     closeBottomSheet();
@@ -212,7 +317,7 @@ export default function CameraPreview() {
             <Text style={bottomSheetStyles.title}>스티커 선택</Text>
             <ScrollView
               style={bottomSheetStyles.scrollView}
-              showsVerticalScrollIndicator={false}
+              showsVerticalScrollIndicator={true}
             >
               <View style={bottomSheetStyles.stickerGrid}>
                 {stickerList.map((sticker, index) => (
@@ -350,6 +455,7 @@ export default function CameraPreview() {
 
       <View>
         <OverlaySwitch />
+        <CustomOpacitySlider />
         <Camera
           ref={cameraRef}
           device={chosenDevice}
