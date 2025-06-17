@@ -405,9 +405,9 @@ export default function CameraPreview() {
         )}
         {transparentOverlay && (
           <View style={styles.resetButtonContainer}>
-            <Button
-              title='RESET'
-              color='#FFF'
+            <Svg.ResetOverlay
+              width={50}
+              height={50}
               onPress={resetPhoto}
             />
           </View>
@@ -463,10 +463,9 @@ const styles = StyleSheet.create({
   },
   resetButtonContainer: {
     position: 'absolute',
-    bottom: 0,
-    right: SCREEN_WIDTH * 0.05,
+    right: '0%',
     paddingVertical: SCREEN_HEIGHT * 0.015,
-    paddingHorizontal: SCREEN_WIDTH * 0.04,
+    paddingHorizontal: SCREEN_WIDTH * 0.01,
     borderRadius: 6,
   },
   centerStickerContainer: {
