@@ -425,11 +425,6 @@ export default function CameraPreview() {
               height={50}
               onPress={resetPhoto}
             />
-            {/* <Button
-              title='RESET'
-              color='#FFF'
-              onPress={resetPhoto}
-            /> */}
           </View>
         )}
       </View>
@@ -483,10 +478,9 @@ const styles = StyleSheet.create({
   },
   resetButtonContainer: {
     position: 'absolute',
-    // bottom: 0,
-    right: -10,
+    right: '0%',
     paddingVertical: SCREEN_HEIGHT * 0.015,
-    paddingHorizontal: SCREEN_WIDTH * 0.04,
+    paddingHorizontal: SCREEN_WIDTH * 0.01,
     borderRadius: 6,
   },
   centerStickerContainer: {
