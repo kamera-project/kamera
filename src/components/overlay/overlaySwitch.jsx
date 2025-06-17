@@ -3,15 +3,17 @@ import { View, Switch, Text, StyleSheet } from 'react-native';
 import { useCameraStore } from '../../store/useCameraStore';
 
 export default function OverlaySwitch() {
-  const isFeatureOn = useCameraStore((state) => state.isFeatureOn);
-  const setIsFeatureOn = useCameraStore((state) => state.setIsFeatureOn);
+  const isOverlaySwitchOn = useCameraStore((state) => state.isOverlaySwitchOn);
+  const setIsOverlaySwitch = useCameraStore(
+    (state) => state.setIsOverlaySwitch,
+  );
 
   return (
     <View style={styles.overlay}>
-      <Text style={styles.label}>{isFeatureOn ? 'ON' : 'OFF'}</Text>
+      <Text style={styles.label}>{isOverlaySwitchOn ? 'ON' : 'OFF'}</Text>
       <Switch
-        value={isFeatureOn}
-        onValueChange={setIsFeatureOn}
+        value={isOverlaySwitchOn}
+        onValueChange={setIsOverlaySwitch}
         thumbColor='#FFF'
         trackColor={{ true: '#4CAF50', false: '#888' }}
       />
@@ -30,7 +32,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.4)',
     padding: 8,
     borderRadius: 20,
-    transform: [{ scaleX: 0.9 }, { scaleY: 0.9 }],
+    transform: [{ scale: 0.9 }],
   },
   label: {
     color: '#FFF',
