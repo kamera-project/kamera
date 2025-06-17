@@ -25,14 +25,15 @@ export default function CameraActionBar({
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.row}>
         <TouchableOpacity onPress={openGallery}>
-          {thumbnailUri ? (
-            <Image
-              source={{ uri: thumbnailUri }}
-              style={styles.icon}
-            />
-          ) : (
-            <Gallery style={styles.icon} />
-          )}
+          {thumbnailUri === undefined
+            ? null
+            : thumbnailUri
+              ? <Image
+                source={{ uri: thumbnailUri }}
+                style={styles.icon}
+              />
+              : <Gallery style={styles.icon} />
+          }
         </TouchableOpacity>
 
         <TouchableOpacity

@@ -48,6 +48,7 @@ export default function CameraPreview() {
 
   const isRequesting = useCameraStore((state) => state.isRequesting);
   const setIsRequesting = useCameraStore((state) => state.setIsRequesting);
+  const setThumbnailUri = useCameraStore((state) => state.setThumbnailUri);
   const getLatestPhoto = useCameraStore((state) => state.getLatestPhoto);
 
   const backCamera = useCameraDevice('back');
@@ -153,6 +154,14 @@ export default function CameraPreview() {
       await getLatestPhoto();
     })();
   }, []);
+
+  useEffect(() => {
+    if (photoPermissionStatus === 'granted' || photoPermissionStatus === 'limited') {
+      getLatestPhoto();
+    } else if (photoPermissionStatus === 'denied' || photoPermissionStatus === 'blocked') {
+      setThumbnailUri(null);
+    }
+  }, [photoPermissionStatus, getLatestPhoto, setThumbnailUri]);
 
   async function requestPermissions() {
     setIsRequesting(true);
@@ -291,7 +300,7 @@ export default function CameraPreview() {
         } else {
         }
       }, 100);
-    } catch (err) {}
+    } catch (err) { }
   }
 
   const onWebViewMessage = (event) => {
