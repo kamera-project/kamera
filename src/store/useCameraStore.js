@@ -7,6 +7,7 @@ export const useCameraStore = create((set) => ({
   isRequesting: false,
   thumbnailUri: undefined,
   placedStickers: [],
+  isOverlaySwitchOn: false,
 
   setCameraRef: (ref) => set({ cameraRef: ref }),
   setCameraPermission: (status) => set({ cameraPermission: status }),
@@ -14,6 +15,8 @@ export const useCameraStore = create((set) => ({
   setIsRequesting: (request) => set({ isRequesting: request }),
   setThumbnailUri: (uri) => set({ thumbnailUri: uri }),
   setPlacedStickers: (sticker) => set({ placedStickers: sticker }),
+  setIsOverlaySwitch: (overlaySwitch) =>
+    set({ isOverlaySwitchOn: overlaySwitch }),
   getLatestPhoto: async () => {
     try {
       const photos = await CameraRoll.getPhotos({

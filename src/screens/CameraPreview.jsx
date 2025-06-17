@@ -12,6 +12,7 @@ import {
   ScrollView,
   Alert,
   Linking,
+  Switch,
 } from 'react-native';
 
 import { Camera, useCameraDevice } from 'react-native-vision-camera';
@@ -26,6 +27,7 @@ import DraggableSticker from '../components/sticker/DraggableSticker';
 import * as Svg from '../assets/svg';
 import { usePhotoPermission } from '../hooks/usePermissions';
 import { binaryImageProcessor } from '../utils/overlay/binaryImageProcessor';
+import OverlaySwitch from '../components/overlay/overlaySwitch';
 
 export default function CameraPreview() {
   const [flash, setFlash] = useState('auto');
@@ -52,7 +54,8 @@ export default function CameraPreview() {
 
   const backCamera = useCameraDevice('back');
   const frontCamera = useCameraDevice('front');
-  const { photoPermissionStatus, requestGalleryPermissions, openAppSettings } = usePhotoPermission();
+  const { photoPermissionStatus, requestGalleryPermissions, openAppSettings } =
+    usePhotoPermission();
   const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
   const bottomSheetHeight = useRef(new Animated.Value(0)).current;
   const initialCameraMode = backCamera || frontCamera;
@@ -133,24 +136,6 @@ export default function CameraPreview() {
       width={70}
       height={50}
     />,
-    '😀',
-    '😎',
-    '🎉',
-    '❤️',
-    '⭐',
-    '🌈',
-    '🎨',
-    '🎭',
-    '🎪',
-    '🎯',
-    '🎲',
-    '🎸',
-    '🎤',
-    '🎧',
-    '🎮',
-    '🎬',
-    '🎺',
-    '🥳',
   ];
 
   useEffect(() => {
@@ -337,16 +322,23 @@ export default function CameraPreview() {
   };
 
   const openGallery = async () => {
-    if (photoPermissionStatus === 'granted' || photoPermissionStatus === 'limited') {
+    if (
+      photoPermissionStatus === 'granted' ||
+      photoPermissionStatus === 'limited'
+    ) {
       setIsGalleryVisible(true);
-    } else if (photoPermissionStatus === 'denied' || photoPermissionStatus === 'blocked') {
+    } else if (
+      photoPermissionStatus === 'denied' ||
+      photoPermissionStatus === 'blocked'
+    ) {
       Alert.alert('사진 접근 권한이 필요합니다', '설정에서 허용해주세요', [
         { text: '취소', style: 'cancel' },
         { text: '설정 열기', onPress: openAppSettings },
       ]);
     } else {
       const requestResult = await requestGalleryPermissions();
-      if (requestResult === 'granted' || requestResult === 'limited') setIsGalleryVisible(true);
+      if (requestResult === 'granted' || requestResult === 'limited')
+        setIsGalleryVisible(true);
       else if (requestResult === 'denied' || requestResult === 'blocked') {
         Alert.alert('사진 접근 권한이 필요합니다', '설정에서 허용해주세요', [
           { text: '취소', style: 'cancel' },
@@ -365,7 +357,9 @@ export default function CameraPreview() {
         flash={flash}
         onToggleFlash={onToggleFlash}
       />
+
       <View>
+        <OverlaySwitch />
         <Camera
           ref={cameraRef}
           device={chosenDevice}
@@ -421,9 +415,9 @@ export default function CameraPreview() {
         )}
         {transparentOverlay && (
           <View style={styles.resetButtonContainer}>
-            <Button
-              title='RESET'
-              color='#FFF'
+            <Svg.ResetOverlay
+              width={50}
+              height={50}
               onPress={resetPhoto}
             />
           </View>
@@ -455,6 +449,7 @@ const styles = StyleSheet.create({
   overallBackground: {
     flex: 1,
     backgroundColor: 'white',
+    position: 'relative',
   },
   cameraPosition: {
     width: SCREEN_WIDTH,
@@ -479,10 +474,9 @@ const styles = StyleSheet.create({
   },
   resetButtonContainer: {
     position: 'absolute',
-    bottom: 0,
-    right: SCREEN_WIDTH * 0.05,
+    right: '0%',
     paddingVertical: SCREEN_HEIGHT * 0.015,
-    paddingHorizontal: SCREEN_WIDTH * 0.04,
+    paddingHorizontal: SCREEN_WIDTH * 0.01,
     borderRadius: 6,
   },
   centerStickerContainer: {

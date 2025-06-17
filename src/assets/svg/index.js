@@ -17,3 +17,4 @@ export { default as Vector16 } from './Vector-16.svg';
 export { default as Vector17 } from './Vector-17.svg';
 export { default as Vector18 } from './Vector-18.svg';
 export { default as Vector19 } from './Vector-19.svg';
+export { default as ResetOverlay } from './ResetOverlay.svg';
