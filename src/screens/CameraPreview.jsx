@@ -464,8 +464,8 @@ const styles = StyleSheet.create({
   resetButtonContainer: {
     position: 'absolute',
     right: '0%',
-    paddingVertical: SCREEN_HEIGHT * 0.015,
-    paddingHorizontal: SCREEN_WIDTH * 0.01,
+    paddingVertical: SCREEN_HEIGHT * 0.025,
+    paddingHorizontal: SCREEN_WIDTH * 0.03,
     borderRadius: 6,
   },
   centerStickerContainer: {

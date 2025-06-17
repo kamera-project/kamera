@@ -7,7 +7,7 @@ export const useCameraStore = create((set) => ({
   isRequesting: false,
   thumbnailUri: null,
   placedStickers: [],
-  isOverlaySwitchOn: false,
+  isOverlaySwitchOn: true,
 
   setCameraRef: (ref) => set({ cameraRef: ref }),
   setCameraPermission: (status) => set({ cameraPermission: status }),
