@@ -407,7 +407,7 @@ export default function CameraPreview() {
                 left: 0,
                 opacity: 0.3,
                 backgroundColor: 'transparent',
-                transform: isFront ? [{ scaleX: -1 }] : undefined,
+                transform: isFront ? [{ scaleX: -1 }] : [],
               },
             ]}
           />
