@@ -7,8 +7,13 @@ export default function useDraggableSticker() {
   const scale = useRef(new Animated.Value(1)).current;
   const placedStickers = useCameraStore((state) => state.placedStickers);
   const setPlacedStickers = useCameraStore((state) => state.setPlacedStickers);
+  const setShowSlider = useCameraStore((state) => state.setShowSlider);
   const removeSticker = (id) => {
     setPlacedStickers(placedStickers.filter((sticker) => sticker.id !== id));
+    setPlacedStickers(placedStickers.filter((sticker) => sticker.id !== id));
+    if (placedStickers.length === 1) {
+      setShowSlider(false);
+    }
   };
   const lastDistance = useRef(null);
   const currentScale = useRef(1);
