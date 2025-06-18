@@ -33,28 +33,44 @@ export default function CameraActionBar({
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity onPress={openGallery} style={[styles.iconPosition, thumbnailUri && { backgroundColor: 'transparent' },
-      ]}>
-        {thumbnailUri === undefined
-          ? null
-          : thumbnailUri
-            ? <Image
-              source={{ uri: thumbnailUri }}
-              style={styles.icon}
-            />
-            : <GalleryIcon width={ICON_SIZE} height={ICON_SIZE} />
-        }
+      <TouchableOpacity
+        onPress={openGallery}
+        style={[
+          styles.iconPosition,
+          thumbnailUri && { backgroundColor: 'transparent' },
+        ]}
+      >
+        {thumbnailUri === undefined ? null : thumbnailUri ? (
+          <Image
+            source={{ uri: thumbnailUri }}
+            style={styles.icon}
+          />
+        ) : (
+          <GalleryIcon
+            width={ICON_SIZE}
+            height={ICON_SIZE}
+          />
+        )}
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={onTakePhoto}
         style={styles.captureBtnPressed}
       >
-        <HomeButtonIcon width={CAPTURE_INNER_D} height={CAPTURE_INNER_D} />
+        <HomeButtonIcon
+          width={CAPTURE_INNER_D}
+          height={CAPTURE_INNER_D}
+        />
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={openStickerBook} style={styles.iconPosition}>
-        <StickerIcon width={ICON_SIZE} height={ICON_SIZE} />
+      <TouchableOpacity
+        onPress={openStickerBook}
+        style={styles.iconPosition}
+      >
+        <StickerIcon
+          width={ICON_SIZE}
+          height={ICON_SIZE}
+        />
       </TouchableOpacity>
     </SafeAreaView>
   );

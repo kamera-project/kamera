@@ -1,5 +1,10 @@
 import React from 'react';
-import { Dimensions, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  Dimensions,
+  SafeAreaView,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 
 import FlashAutoIcon from '../../assets/svg/flash-auto.svg';
 import FlashOnIcon from '../../assets/svg/flash-on.svg';
