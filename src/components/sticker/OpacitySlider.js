@@ -6,6 +6,7 @@ const SLIDER_HEIGHT = 240;
 const THUMB_SIZE = 25;
 const TRACK_WIDTH = 8;
 const DRAG_RANGE = SLIDER_HEIGHT - THUMB_SIZE;
+const SLIDER_SCALE = 1.1;
 
 export default function CustomOpacitySlider() {
   const opacity = useStickerStore((state) => state.opacity);
@@ -55,7 +56,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.4)',
     padding: 8,
     borderRadius: 20,
-    transform: [{ scale: 1.1 }],
+    transform: [{ scale: SLIDER_SCALE }],
   },
   label: {
     color: '#FFF',
