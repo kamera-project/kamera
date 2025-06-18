@@ -5,7 +5,7 @@ import { Image, Text } from "react-native";
 import MoveToCameraIcon from "../assets/svg/cancel.svg";
 import BackIcon from "../assets/svg/back.svg";
 import DeletePhotoIcon from "../assets/svg/trash.svg";
-
+import { useCameraStore } from "../store/useCameraStore";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -20,6 +20,8 @@ export default function GalleryScreen({ visible, onClose }) {
   const [photos, setPhotos] = useState([]);
   const [selectedUri, setSelectedUri] = useState(null);
   const [isSingleView, setIsSingleView] = useState(false);
+
+  const getLatestPhoto = useCameraStore((state) => state.getLatestPhoto);
 
   const bringPhotos = async () => {
     try {
@@ -41,6 +43,7 @@ export default function GalleryScreen({ visible, onClose }) {
       setSelectedUri(null);
       setIsSingleView(false);
       bringPhotos();
+      await getLatestPhoto();
     } catch (err) {
       console.error("삭제 실패:", err);
     }
