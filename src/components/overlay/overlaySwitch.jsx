@@ -16,6 +16,8 @@ export default function OverlaySwitch() {
         onValueChange={setIsOverlaySwitch}
         thumbColor='#FFF'
         trackColor={{ true: '#d4d4d4', false: '#888' }}
+        // trackColor={{ true: '#71dc84', false: '#888' }}
+        // trackColor={{ true: '#f1c232', false: '#888' }}
       />
     </View>
   );
