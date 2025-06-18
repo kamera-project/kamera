@@ -31,7 +31,6 @@ import OverlaySwitch from '../components/overlay/overlaySwitch';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-const FONT_M = SCREEN_WIDTH * 0.045;
 const RESET_ICON = SCREEN_WIDTH * 0.11;
 const RESET_PAD_H = SCREEN_WIDTH * 0.03;
 const RESET_PAD_V = SCREEN_HEIGHT * 0.025;
@@ -466,7 +465,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   titleText: {
-    fontSize: FONT_M,
+    fontSize: SCREEN_WIDTH * 0.045,
     marginBottom: 12,
     textAlign: 'center',
     color: 'black',
@@ -477,7 +476,7 @@ const styles = StyleSheet.create({
     left: 0, right: 0,
     textAlign: 'center',
     color: 'white',
-    fontSize: FONT_M * 0.9,
+    fontSize: (SCREEN_WIDTH * 0.045) * 0.9,
   },
   resetButtonContainer: {
     position: 'absolute',

@@ -2,7 +2,7 @@ import { CameraRoll } from "@react-native-camera-roll/camera-roll";
 import { useEffect, useState } from "react";
 import { Alert, Dimensions, FlatList, Modal, SafeAreaView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Image, Text } from "react-native";
-import MoveToCameraIcon from "../assets/svg/x.svg";
+import MoveToCameraIcon from "../assets/svg/cancel.svg";
 import BackIcon from "../assets/svg/back.svg";
 import DeletePhotoIcon from "../assets/svg/trash.svg";
 
@@ -13,8 +13,6 @@ const numColumns = 3;
 const ICON_SIZE = SCREEN_WIDTH * 0.12;
 const ICON_WRAPPER_W = SCREEN_WIDTH * 0.18;
 const ICON_WRAPPER_H = SCREEN_HEIGHT * 0.06;
-const PADDING_SMALL = SCREEN_HEIGHT * 0.015;
-const PADDING_MEDIUM = SCREEN_WIDTH * 0.045;
 const FONT_SCALE_TITLE = SCREEN_WIDTH * 0.045;
 const MARGIN_TOP_IMAGE = SCREEN_HEIGHT * 0.03;
 
@@ -124,21 +122,23 @@ const styles = StyleSheet.create({
   title: {
     fontSize: FONT_SCALE_TITLE,
     textAlign: "center",
-    padding: PADDING_SMALL,
+    padding: SCREEN_HEIGHT * 0.015,
+    padding: 20,
+    padding: SCREEN_WIDTH * 0.045,
   },
   closeBtn: {
     backgroundColor: "white",
     alignItems: "center",
-    padding: PADDING_SMALL,
+    padding: SCREEN_HEIGHT * 0.015,
   },
   backButton: {
-    padding: PADDING_MEDIUM,
+    padding: SCREEN_WIDTH * 0.045,
     backgroundColor: "white",
     alignItems: "flex-start",
   },
   deleteButton: {
     backgroundColor: "white",
-    padding: PADDING_MEDIUM,
+    padding: SCREEN_WIDTH * 0.045,
   },
   icon: {
     width: ICON_SIZE,
@@ -149,8 +149,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: PADDING_MEDIUM,
-    paddingVertical: PADDING_SMALL,
+    paddingHorizontal: SCREEN_WIDTH * 0.045,
+    paddingVertical: SCREEN_HEIGHT * 0.015,
   },
   iconPosition: {
     width: ICON_WRAPPER_W,
