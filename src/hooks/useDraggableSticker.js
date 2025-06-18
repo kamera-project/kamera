@@ -11,7 +11,6 @@ export default function useDraggableSticker() {
   const removeSticker = (id) => {
     setPlacedStickers(placedStickers.filter((sticker) => sticker.id !== id));
     setPlacedStickers(placedStickers.filter((sticker) => sticker.id !== id));
-    console.log(`placedStickers 개수 ${placedStickers.length}`);
     if (placedStickers.length === 1) {
       setShowSlider(false);
     }
