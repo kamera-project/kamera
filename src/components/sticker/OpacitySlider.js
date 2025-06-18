@@ -34,7 +34,7 @@ export default function CustomOpacitySlider() {
     <View style={styles.overlay}>
       <View style={styles.sliderWrapper}>
         <Text style={styles.value}>{opacity.toFixed(1) * 100}</Text>
-        <View style={[styles.track, { height: SLIDER_HEIGHT * 1 }]} />
+        <View style={[styles.track, { height: SLIDER_HEIGHT }]} />
         <View
           {...panResponder.panHandlers}
           style={[styles.thumb, { top: thumbY + THUMB_SIZE * 0.66 }]}
