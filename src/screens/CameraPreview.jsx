@@ -59,12 +59,6 @@ export default function CameraPreview() {
   const bottomSheetHeight = useRef(new Animated.Value(0)).current;
   const initialCameraMode = backCamera || frontCamera;
   const stickerList = [
-    // {
-    //   type: 'image',
-    //   source: require('../assets/images/hs_thumb.png'),
-    //   originalSource: require('../assets/images/hs_original.png'), // 고화질
-    // },
-    // ,
     <Image
       source={require('../assets/images/m1.png')}
       style={{ width: 100, height: 100 }}
