@@ -271,7 +271,8 @@ copies or substantial portions of the Software.
 
 ## 👥 팀
 
-- **[Your Name]** - _Initial work_ - [GitHub](https://github.com/your-username)
+- **[Bob 오혜성]** - _Initial work_ - [GitHub](https://github.com/your-username)
+- **[Rio 성경식]** - _Initial work_ - [GitHub](https://github.com/your-username)
 
 ---
 

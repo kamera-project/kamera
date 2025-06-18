@@ -40,11 +40,12 @@ const STICKER_H = SCREEN_HEIGHT * 0.065;
 
 export default function CameraPreview() {
   const [flash, setFlash] = useState('auto');
-  const cameraRef = useRef(null);
-  const webViewRef = useRef(null);
   const [processedUri, setProcessedUri] = useState(null);
   const [transparentOverlay, setTransparentOverlay] = useState(null);
   const [isGalleryVisible, setIsGalleryVisible] = useState(false);
+  const cameraRef = useRef(null);
+  const webViewRef = useRef(null);
+  const bottomSheetHeight = useRef(new Animated.Value(0)).current;
 
   const cameraPermission = useCameraStore((state) => state.cameraPermission);
   const setCameraPermission = useCameraStore(
@@ -52,9 +53,10 @@ export default function CameraPreview() {
   );
   const placedStickers = useCameraStore((state) => state.placedStickers);
   const setPlacedStickers = useCameraStore((state) => state.setPlacedStickers);
+  const showSlider = useCameraStore((state) => state.showSlider);
+  const setShowSlider = useCameraStore((state) => state.setShowSlider);
   const chosenDevice = useCameraStore((state) => state.chosenDevice);
   const setChosenDevice = useCameraStore((state) => state.setChosenDevice);
-
   const isRequesting = useCameraStore((state) => state.isRequesting);
   const setIsRequesting = useCameraStore((state) => state.setIsRequesting);
   const setThumbnailUri = useCameraStore((state) => state.setThumbnailUri);
@@ -65,7 +67,6 @@ export default function CameraPreview() {
   const { photoPermissionStatus, requestGalleryPermissions, openAppSettings } =
     usePhotoPermission();
   const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
-  const bottomSheetHeight = useRef(new Animated.Value(0)).current;
   const initialCameraMode = backCamera || frontCamera;
   const stickerList = [
     <Image
@@ -260,9 +261,15 @@ export default function CameraPreview() {
   }, []);
 
   useEffect(() => {
-    if (photoPermissionStatus === 'granted' || photoPermissionStatus === 'limited') {
+    if (
+      photoPermissionStatus === 'granted' ||
+      photoPermissionStatus === 'limited'
+    ) {
       getLatestPhoto();
-    } else if (photoPermissionStatus === 'denied' || photoPermissionStatus === 'blocked') {
+    } else if (
+      photoPermissionStatus === 'denied' ||
+      photoPermissionStatus === 'blocked'
+    ) {
       setThumbnailUri(null);
     }
   }, [photoPermissionStatus, getLatestPhoto, setThumbnailUri]);
@@ -301,6 +308,7 @@ export default function CameraPreview() {
       height: 200,
     };
     setPlacedStickers([...placedStickers, newSticker]);
+    setShowSlider(true);
     closeBottomSheet();
   };
 
@@ -407,7 +415,7 @@ export default function CameraPreview() {
         } else {
         }
       }, 100);
-    } catch (err) { }
+    } catch (err) {}
   }
 
   const onWebViewMessage = (event) => {
@@ -419,6 +427,7 @@ export default function CameraPreview() {
     setProcessedUri(null);
     setTransparentOverlay(null);
     setPlacedStickers([]);
+    setShowSlider(false);
   };
 
   const onToggleFlash = () => {
@@ -468,7 +477,7 @@ export default function CameraPreview() {
 
       <View style={styles.bodyPosition}>
         <OverlaySwitch />
-        <CustomOpacitySlider />
+        {showSlider && <CustomOpacitySlider />}
         <Camera
           ref={cameraRef}
           device={chosenDevice}
@@ -573,10 +582,11 @@ const styles = StyleSheet.create({
   processingText: {
     position: 'absolute',
     top: '50%',
-    left: 0, right: 0,
+    left: 0,
+    right: 0,
     textAlign: 'center',
     color: 'white',
-    fontSize: (SCREEN_WIDTH * 0.045) * 0.9,
+    fontSize: SCREEN_WIDTH * 0.045 * 0.9,
   },
   resetButtonContainer: {
     position: 'absolute',
@@ -606,7 +616,7 @@ const styles = StyleSheet.create({
   bottomPosition: {
     flex: 1.8,
     backgroundColor: 'white',
-  }
+  },
 });
 const bottomSheetStyles = StyleSheet.create({
   modalOverlay: {

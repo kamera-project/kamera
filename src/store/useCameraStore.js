@@ -8,6 +8,7 @@ export const useCameraStore = create((set) => ({
   thumbnailUri: undefined,
   placedStickers: [],
   isOverlaySwitchOn: true,
+  showSlider: false,
 
   setCameraRef: (ref) => set({ cameraRef: ref }),
   setCameraPermission: (status) => set({ cameraPermission: status }),
@@ -15,6 +16,7 @@ export const useCameraStore = create((set) => ({
   setIsRequesting: (request) => set({ isRequesting: request }),
   setThumbnailUri: (uri) => set({ thumbnailUri: uri }),
   setPlacedStickers: (sticker) => set({ placedStickers: sticker }),
+  setShowSlider: (slider) => set({ showSlider: slider }),
   setIsOverlaySwitch: (overlaySwitch) =>
     set({ isOverlaySwitchOn: overlaySwitch }),
   getLatestPhoto: async () => {
