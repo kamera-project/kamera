@@ -13,6 +13,7 @@ import {
   Alert,
   Linking,
   Switch,
+  ActivityIndicator,
 } from 'react-native';
 
 import { Camera, useCameraDevice } from 'react-native-vision-camera';
@@ -512,7 +513,12 @@ export default function CameraPreview() {
           />
         )}
         {processedUri && !transparentOverlay && (
-          <Text style={styles.processingText}>오버레이 생성 중...</Text>
+          <View style={styles.loadingIndicator}>
+            <ActivityIndicator
+              size='large'
+              color='#71dc84'
+            />
+          </View>
         )}
         {transparentOverlay && (
           <Image
@@ -579,7 +585,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'black',
   },
-  processingText: {
+  loadingIndicator: {
     position: 'absolute',
     top: '50%',
     left: 0,
