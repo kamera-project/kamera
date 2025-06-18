@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: SCREEN_HEIGHT / 3.5,
     left: SCREEN_WIDTH / 2 - removeButtonSize / 2,
-    zIndex: 10,
+    zIndex: 2,
   },
   emojiText: {
     fontSize: 100,

@@ -600,7 +600,7 @@ const styles = StyleSheet.create({
     top: '50%',
     left: '50%',
     transform: [{ translateX: -30 }, { translateY: -30 }],
-    zIndex: 10,
+    zIndex: 1,
   },
   stickerText: {
     fontSize: 60,
