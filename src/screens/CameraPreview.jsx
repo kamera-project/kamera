@@ -29,6 +29,15 @@ import { usePhotoPermission } from '../hooks/usePermissions';
 import { binaryImageProcessor } from '../utils/overlay/binaryImageProcessor';
 import OverlaySwitch from '../components/overlay/overlaySwitch';
 
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+
+const FONT_M = SCREEN_WIDTH * 0.045;
+const RESET_ICON = SCREEN_WIDTH * 0.11;
+const RESET_PAD_H = SCREEN_WIDTH * 0.03;
+const RESET_PAD_V = SCREEN_HEIGHT * 0.025;
+const STICKER_W = SCREEN_WIDTH * 0.18;
+const STICKER_H = SCREEN_HEIGHT * 0.065;
+
 export default function CameraPreview() {
   const [flash, setFlash] = useState('auto');
   const cameraRef = useRef(null);
@@ -60,80 +69,80 @@ export default function CameraPreview() {
   const initialCameraMode = backCamera || frontCamera;
   const stickerList = [
     <Svg.Vector1
-      width={70}
-      height={50}
+      width={STICKER_W}
+      height={STICKER_H}
     />,
     <Svg.Vector2
-      width={70}
-      height={50}
+      width={STICKER_W}
+      height={STICKER_H}
     />,
     <Svg.Vector3
-      width={70}
-      height={50}
+      width={STICKER_W}
+      height={STICKER_H}
     />,
     <Svg.Vector4
-      width={70}
-      height={50}
+      width={STICKER_W}
+      height={STICKER_H}
     />,
     <Svg.Vector5
-      width={70}
-      height={50}
+      width={STICKER_W}
+      height={STICKER_H}
     />,
     <Svg.Vector6
-      width={70}
-      height={50}
+      width={STICKER_W}
+      height={STICKER_H}
     />,
     <Svg.Vector7
-      width={70}
-      height={50}
+      width={STICKER_W}
+      height={STICKER_H}
     />,
     <Svg.Vector8
-      width={70}
-      height={50}
+      width={STICKER_W}
+      height={STICKER_H}
     />,
     <Svg.Vector9
-      width={70}
-      height={50}
+      width={STICKER_W}
+      height={STICKER_H}
     />,
     <Svg.Vector10
-      width={70}
-      height={50}
+      width={STICKER_W}
+      height={STICKER_H}
     />,
     <Svg.Vector11
-      width={70}
-      height={50}
+      width={STICKER_W}
+      height={STICKER_H}
     />,
     <Svg.Vector12
-      width={70}
-      height={50}
+      width={STICKER_W}
+      height={STICKER_H}
     />,
     <Svg.Vector13
-      width={70}
-      height={50}
+      width={STICKER_W}
+      height={STICKER_H}
     />,
     <Svg.Vector14
-      width={70}
-      height={50}
+      width={STICKER_W}
+      height={STICKER_H}
     />,
     <Svg.Vector15
-      width={70}
-      height={50}
+      width={STICKER_W}
+      height={STICKER_H}
     />,
     <Svg.Vector16
-      width={70}
-      height={50}
+      width={STICKER_W}
+      height={STICKER_H}
     />,
     <Svg.Vector17
-      width={70}
-      height={50}
+      width={STICKER_W}
+      height={STICKER_H}
     />,
     <Svg.Vector18
-      width={70}
-      height={50}
+      width={STICKER_W}
+      height={STICKER_H}
     />,
     <Svg.Vector19
-      width={70}
-      height={50}
+      width={STICKER_W}
+      height={STICKER_H}
     />,
   ];
 
@@ -351,13 +360,15 @@ export default function CameraPreview() {
   const isFront = chosenDevice.position === 'front';
 
   return (
-    <View style={styles.overallBackground}>
-      <CameraToolBar
-        flash={flash}
-        onToggleFlash={onToggleFlash}
-      />
+    <View style={styles.container}>
+      <View style={styles.headerPosition}>
+        <CameraToolBar
+          flash={flash}
+          onToggleFlash={onToggleFlash}
+        />
+      </View>
 
-      <View>
+      <View style={styles.bodyPosition}>
         <OverlaySwitch />
         <Camera
           ref={cameraRef}
@@ -415,28 +426,28 @@ export default function CameraPreview() {
         {transparentOverlay && (
           <View style={styles.resetButtonContainer}>
             <Svg.ResetOverlay
-              width={50}
-              height={50}
+              width={RESET_ICON}
+              height={RESET_ICON}
               onPress={resetPhoto}
             />
           </View>
         )}
       </View>
-      <CameraActionBar
-        onTakePhoto={onTakePhoto}
-        openGallery={openGallery}
-        onStickerPress={openStickerSheet}
-      />
-      <GalleryScreen
-        visible={isGalleryVisible}
-        onClose={closeGallery}
-      />
-      {renderBottomSheet()}
+      <View style={styles.bottomPosition}>
+        <CameraActionBar
+          onTakePhoto={onTakePhoto}
+          openGallery={openGallery}
+          onStickerPress={openStickerSheet}
+        />
+        <GalleryScreen
+          visible={isGalleryVisible}
+          onClose={closeGallery}
+        />
+        {renderBottomSheet()}
+      </View>
     </View>
   );
 }
-
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   centerPosition: {
@@ -444,7 +455,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  overallBackground: {
+  container: {
     flex: 1,
     backgroundColor: 'white',
     position: 'relative',
@@ -453,10 +464,9 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH,
     aspectRatio: 3 / 4,
     overflow: 'hidden',
-    backgroundColor: '#000',
   },
   titleText: {
-    fontSize: 18,
+    fontSize: FONT_M,
     marginBottom: 12,
     textAlign: 'center',
     color: 'black',
@@ -464,18 +474,17 @@ const styles = StyleSheet.create({
   processingText: {
     position: 'absolute',
     top: '50%',
-    left: 0,
-    right: 0,
+    left: 0, right: 0,
     textAlign: 'center',
     color: 'white',
-    fontSize: 16,
+    fontSize: FONT_M * 0.9,
   },
   resetButtonContainer: {
     position: 'absolute',
-    right: '0%',
-    paddingVertical: SCREEN_HEIGHT * 0.025,
-    paddingHorizontal: SCREEN_WIDTH * 0.03,
-    borderRadius: 6,
+    bottom: '84%',
+    right: 0,
+    paddingHorizontal: RESET_PAD_H,
+    paddingVertical: RESET_PAD_V,
   },
   centerStickerContainer: {
     position: 'absolute',
@@ -487,6 +496,18 @@ const styles = StyleSheet.create({
   stickerText: {
     fontSize: 60,
   },
+  headerPosition: {
+    flex: 1.2,
+    backgroundColor: 'white',
+  },
+  bodyPosition: {
+    flex: 7,
+    alignItems: 'center',
+  },
+  bottomPosition: {
+    flex: 1.8,
+    backgroundColor: 'white',
+  }
 });
 const bottomSheetStyles = StyleSheet.create({
   modalOverlay: {

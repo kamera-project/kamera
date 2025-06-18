@@ -2,12 +2,21 @@ import { CameraRoll } from "@react-native-camera-roll/camera-roll";
 import { useEffect, useState } from "react";
 import { Alert, Dimensions, FlatList, Modal, SafeAreaView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Image, Text } from "react-native";
-import MoveToCamera from "../assets/svg/x.svg";
-import BackBtn from "../assets/svg/back.svg";
-import DeletePhoto from "../assets/svg/trash.svg";
+import MoveToCameraIcon from "../assets/svg/x.svg";
+import BackIcon from "../assets/svg/back.svg";
+import DeletePhotoIcon from "../assets/svg/trash.svg";
+
+
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const numColumns = 3;
-const imageSize = Dimensions.get('window').width / numColumns;
+const ICON_SIZE = SCREEN_WIDTH * 0.12;
+const ICON_WRAPPER_W = SCREEN_WIDTH * 0.18;
+const ICON_WRAPPER_H = SCREEN_HEIGHT * 0.06;
+const PADDING_SMALL = SCREEN_HEIGHT * 0.015;
+const PADDING_MEDIUM = SCREEN_WIDTH * 0.045;
+const FONT_SCALE_TITLE = SCREEN_WIDTH * 0.045;
+const MARGIN_TOP_IMAGE = SCREEN_HEIGHT * 0.03;
 
 export default function GalleryScreen({ visible, onClose }) {
   const [photos, setPhotos] = useState([]);
@@ -53,17 +62,17 @@ export default function GalleryScreen({ visible, onClose }) {
           <View style={{ flex: 1 }}>
             <Image
               source={{ uri: selectedUri }}
-              style={styles.fullImage}
+              style={styles.oneImage}
             />
             <View style={styles.buttonRow}>
               <TouchableOpacity
                 onPress={() => setIsSingleView(false)}
                 style={styles.backButton}
               >
-                <BackBtn />
+                <View style={styles.iconPosition}><BackIcon width={50} height={50} /></View>
               </TouchableOpacity>
               <TouchableOpacity onPress={handleDelete} style={styles.deleteButton}>
-                <DeletePhoto style={styles.icon} />
+                <View style={styles.iconPosition}><DeletePhotoIcon width={50} height={50} /></View>
               </TouchableOpacity>
             </View>
           </View>
@@ -92,7 +101,7 @@ export default function GalleryScreen({ visible, onClose }) {
       {!isSingleView && (
         <SafeAreaView>
           <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
-            <MoveToCamera style={styles.icon} />
+            <View style={styles.iconPosition}><MoveToCameraIcon width={50} height={50} /></View>
           </TouchableOpacity>
         </SafeAreaView>
       )}
@@ -102,48 +111,53 @@ export default function GalleryScreen({ visible, onClose }) {
 
 const styles = StyleSheet.create({
   image: {
-    width: imageSize,
-    height: imageSize,
+    width: SCREEN_WIDTH / numColumns,
+    height: SCREEN_WIDTH / numColumns,
     margin: 2,
   },
-  fullImage: {
+  oneImage: {
     flex: 1,
     resizeMode: "contain",
     backgroundColor: "black",
+    marginTop: MARGIN_TOP_IMAGE,
   },
   title: {
-    fontSize: 18,
+    fontSize: FONT_SCALE_TITLE,
     textAlign: "center",
-    padding: 10,
+    padding: PADDING_SMALL,
   },
   closeBtn: {
     backgroundColor: "white",
     alignItems: "center",
-    padding: 12,
+    padding: PADDING_SMALL,
   },
   backButton: {
-    padding: 16,
+    padding: PADDING_MEDIUM,
     backgroundColor: "white",
     alignItems: "flex-start",
   },
-  backText: {
-    fontSize: 16,
-    color: "#333",
-  },
   deleteButton: {
     backgroundColor: "white",
-    padding: 16,
+    padding: PADDING_MEDIUM,
   },
   icon: {
-    width: 48,
-    height: 48,
-    marginHorizontal: 8,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
+    marginHorizontal: SCREEN_WIDTH * 0.015,
   },
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingHorizontal: PADDING_MEDIUM,
+    paddingVertical: PADDING_SMALL,
+  },
+  iconPosition: {
+    width: ICON_WRAPPER_W,
+    height: ICON_WRAPPER_H,
+    backgroundColor: '#f0f0f0',
+    borderRadius: ICON_WRAPPER_W / 2,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
