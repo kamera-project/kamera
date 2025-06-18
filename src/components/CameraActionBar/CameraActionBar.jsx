@@ -1,15 +1,25 @@
 import React from 'react';
 import {
   SafeAreaView,
-  View,
   StyleSheet,
   Image,
   TouchableOpacity,
+  Dimensions,
 } from 'react-native';
-import HomeBtn from './HomeButton';
-import Sticker from './Sticker';
-import Gallery from './Gallery';
+import HomeButtonIcon from '../../assets/svg/HomeBtn.svg';
+import StickerIcon from '../../assets/svg/smile.svg';
+import GalleryIcon from '../../assets/svg/gallery.svg';
 import { useCameraStore } from '../../store/useCameraStore';
+
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+
+const H_PADDING = SCREEN_WIDTH * 0.09;
+const V_PADDING = SCREEN_HEIGHT * 0.045;
+const ICON_WRAPPER_W = SCREEN_WIDTH * 0.18;
+const ICON_WRAPPER_H = SCREEN_HEIGHT * 0.065;
+const ICON_SIZE = SCREEN_WIDTH * 0.12;
+const CAPTURE_OUTER_D = SCREEN_WIDTH * 0.17;
+const CAPTURE_INNER_D = SCREEN_WIDTH * 0.175;
 
 export default function CameraActionBar({
   onTakePhoto,
@@ -22,67 +32,62 @@ export default function CameraActionBar({
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.row}>
-        <TouchableOpacity onPress={openGallery}>
-          {thumbnailUri === undefined
-            ? null
-            : thumbnailUri
-              ? <Image
-                source={{ uri: thumbnailUri }}
-                style={styles.icon}
-              />
-              : <Gallery style={styles.icon} />
-          }
-        </TouchableOpacity>
+    <SafeAreaView style={styles.container}>
+      <TouchableOpacity onPress={openGallery} style={[styles.iconPosition, thumbnailUri && { backgroundColor: 'transparent' },
+      ]}>
+        {thumbnailUri === undefined
+          ? null
+          : thumbnailUri
+            ? <Image
+              source={{ uri: thumbnailUri }}
+              style={styles.icon}
+            />
+            : <GalleryIcon width={ICON_SIZE} height={ICON_SIZE} />
+        }
+      </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={onTakePhoto}
-          style={styles.captureBtnPressed}
-        >
-          <HomeBtn style={styles.captureBtn} />
-        </TouchableOpacity>
+      <TouchableOpacity
+        onPress={onTakePhoto}
+        style={styles.captureBtnPressed}
+      >
+        <HomeButtonIcon width={CAPTURE_INNER_D} height={CAPTURE_INNER_D} />
+      </TouchableOpacity>
 
-        <TouchableOpacity onPress={openStickerBook}>
-          <Sticker style={styles.icon} />
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity onPress={openStickerBook} style={styles.iconPosition}>
+        <StickerIcon width={ICON_SIZE} height={ICON_SIZE} />
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-    paddingVertical: 12,
-    backgroundColor: 'white',
-  },
-  row: {
+  container: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    justifyContent: 'space-around',
-    paddingVertical: 16,
+    paddingHorizontal: H_PADDING,
+    paddingVertical: V_PADDING,
+    backgroundColor: 'transparent',
+  },
+  iconPosition: {
+    width: ICON_WRAPPER_W,
+    height: ICON_WRAPPER_H,
+    borderRadius: ICON_WRAPPER_W / 2,
+    backgroundColor: '#f0f0f0',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   icon: {
-    width: 48,
-    height: 48,
-    marginHorizontal: 8,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
   },
-  captureBtnPressed: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+  captureOuter: {
+    width: CAPTURE_OUTER_D,
+    height: CAPTURE_OUTER_D,
+    borderRadius: CAPTURE_OUTER_D / 2,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 2,
-  },
-  captureBtn: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: 'red',
   },
 });

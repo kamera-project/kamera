@@ -1,12 +1,20 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Dimensions, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
 
 import FlashAutoIcon from '../../assets/svg/flash-auto.svg';
 import FlashOnIcon from '../../assets/svg/flash-on.svg';
 import FlashOffIcon from '../../assets/svg/flash-off.svg';
-import FlipCameraIcon from '../../assets/svg/flip-camera.svg';
+import FlipCameraIcon from '../../assets/svg/switch-camera.svg';
 import { useCameraDevice } from 'react-native-vision-camera';
 import { useCameraStore } from '../../store/useCameraStore';
+
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+
+const H_PADDING = SCREEN_WIDTH * 0.06;
+const V_PADDING = SCREEN_HEIGHT * 0.02;
+const WRAPPER_W = SCREEN_WIDTH * 0.18;
+const WRAPPER_H = SCREEN_HEIGHT * 0.065;
+const ICON_SIZE = SCREEN_WIDTH * 0.12;
 
 export default function CameraHeader({ flash, onToggleFlash }) {
   const backCamera = useCameraDevice('back');
@@ -24,34 +32,34 @@ export default function CameraHeader({ flash, onToggleFlash }) {
     <SafeAreaView style={styles.container}>
       <TouchableOpacity
         onPress={onToggleFlash}
-        style={styles.icon}
+        style={styles.iconPosition}
       >
         {flash === 'auto' && (
           <FlashAutoIcon
-            width={40}
-            height={40}
+            width={ICON_SIZE}
+            height={ICON_SIZE}
           />
         )}
         {flash === 'on' && (
           <FlashOnIcon
-            width={40}
-            height={40}
+            width={ICON_SIZE}
+            height={ICON_SIZE}
           />
         )}
         {flash === 'off' && (
           <FlashOffIcon
-            width={40}
-            height={40}
+            width={ICON_SIZE}
+            height={ICON_SIZE}
           />
         )}
       </TouchableOpacity>
       <TouchableOpacity
         onPress={onToggleCamera}
-        style={styles.icon}
+        style={styles.iconPosition}
       >
         <FlipCameraIcon
-          width={46}
-          height={46}
+          width={ICON_SIZE}
+          height={ICON_SIZE}
         />
       </TouchableOpacity>
     </SafeAreaView>
@@ -63,12 +71,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: H_PADDING,
+    paddingVertical: V_PADDING,
+    backgroundColor: 'transparent',
   },
-  icon: {
-    width: 48,
-    height: 48,
-    marginHorizontal: 8,
+  iconPosition: {
+    width: WRAPPER_W,
+    height: WRAPPER_H,
+    borderRadius: WRAPPER_W / 2,
+    backgroundColor: '#f0f0f0',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
