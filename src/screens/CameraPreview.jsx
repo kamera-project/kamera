@@ -62,6 +62,7 @@ export default function CameraPreview() {
   const setIsRequesting = useCameraStore((state) => state.setIsRequesting);
   const setThumbnailUri = useCameraStore((state) => state.setThumbnailUri);
   const getLatestPhoto = useCameraStore((state) => state.getLatestPhoto);
+  const { isOverlaySwitchOn } = useCameraStore.getState();
 
   const backCamera = useCameraDevice('back');
   const frontCamera = useCameraDevice('front');
@@ -406,16 +407,16 @@ export default function CameraPreview() {
   async function onTakePhoto() {
     try {
       const photoPath = await handleTakePhoto(cameraRef, flash);
-      const edgeBase64 = await binaryImageProcessor(photoPath);
-
-      setProcessedUri(`data:image/png;base64,${edgeBase64}`);
-
-      setTimeout(() => {
-        if (webViewRef.current) {
-          webViewRef.current.postMessage(edgeBase64);
-        } else {
-        }
-      }, 100);
+      if (isOverlaySwitchOn) {
+        const edgeBase64 = await binaryImageProcessor(photoPath);
+        setProcessedUri(`data:image/png;base64,${edgeBase64}`);
+        setTimeout(() => {
+          if (webViewRef.current) {
+            webViewRef.current.postMessage(edgeBase64);
+          } else {
+          }
+        }, 100);
+      }
     } catch (err) {}
   }
 
