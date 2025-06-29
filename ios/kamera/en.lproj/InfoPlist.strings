@@ -1,0 +1,5 @@
+NSCameraUsageDescription = "This app uses the camera to capture photos for applying filters and effects. For example, you can take a selfie and apply beauty filters, or enhance landscape photos with color adjustments.";
+
+NSPhotoLibraryAddUsageDescription = "This app saves your edited photos to your iPhone photo library. For example, filtered photos or resized images will be saved to your Camera Roll.";
+
+NSPhotoLibraryUsageDescription = "This app accesses your photo library to let you edit existing photos. For example, you can apply new filters to old travel photos or create photo collages.";
